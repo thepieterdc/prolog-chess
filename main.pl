@@ -1,4 +1,4 @@
-#!/usr/bin/swipl
+#!/usr/bin/swipl -q -f
 
 digit(X, Y) :- atom_number(X, Y).
 
@@ -26,12 +26,21 @@ drawRow([]) :- !.
 
 drawRow([FenChar|FenList]) :- !, drawChar(FenChar), drawRow(FenList).
 
-
 drawRow(FenRow) :- atom_chars(FenRow, FenList), drawRow(FenList).
 
 drawBoard([]).
 drawBoard([Row|Rows]) :- drawRow(Row), nl, drawBoard(Rows).
 
-% Argument parsi1ng
 main :-
-  drawBoard(["rnbqkbnr","pppppppp","8","8","8","8","PPPPPPPP","RNBQKBNR"]).
+  current_prolog_flag(argv, Argv),
+
+  nth0(0, Argv, Board), % bord
+  % nth0(1, Argv, Turn),  % w/b beurt
+  % nth0(2, Argv, Rokade),% rokade
+  % nth0(3, Argv, EnPassant), % en passant
+  % nth0(4, Argv, HalfCount), % halve zetten teller
+  % nth0(5, Argv, FullCount), % volle zetten teller
+
+  split_string(Board, ['/'], [], Split),
+
+  drawBoard(Split).
