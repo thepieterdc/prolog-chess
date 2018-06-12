@@ -6,7 +6,7 @@ parse(FenString, State) :-
   phrase(state(State), FenString).
 
 state([Board, Turn, Castling, EnPassant, HalfCount, FullCount]) -->
-  board(Board), {write(Board)}, white, turn(Turn), white, castling(Castling),
+  board(Board), white, turn(Turn), white, castling(Castling),
   white, en_passant(EnPassant), white, half_count(HalfCount),
   white, full_count(FullCount).
 
@@ -16,9 +16,9 @@ castling([]) --> "-".
 
 en_passant([]) --> "-".
 
-full_count(N) --> integer(N), {N >= 0}.
+full_count(N) --> integer(N), {N > 0}.
 
-half_count(N) --> integer(N), {N > 0}.
+half_count(N) --> integer(N), {N >= 0}.
 
 piece(piece(bishop, black)) --> "b".
 piece(piece(bishop, white)) --> "B".

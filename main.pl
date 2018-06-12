@@ -9,7 +9,10 @@
 :- initialization(main).
 
 main(Argv) :-
-  fen:parse("2Pp4/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp b - - 0 1", State),
+  atomic_list_concat(Argv, ' ', FenRaw),
+  atom_codes(FenRaw, FenString),
+
+  fen:parse(FenString, State),
 
   write(State),
 
