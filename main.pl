@@ -20,7 +20,8 @@ main(Argv) :-
 
   board:set_piece(Board, coordinate(1, 1), bishop(black), Board2),
 
-  fen:parse(FenResult, [Board2, Turn, Castling, EnPassant, HalfCount, FullCount]),
+  fen:fen_string(State, FenResult),
+  % fen:print(FenResult, [Board2, Turn, Castling, EnPassant, HalfCount, FullCount]),
 
   write(FenResult),
 

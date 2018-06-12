@@ -1,7 +1,46 @@
 :- module(fen, []).
 
-parse(FenStr, [Board, Turn, nothing, nothing, HalfCount, FullCount]) :-
-  split_string(FenStr, " ", "", [FBoard, FTurn, _, _, FHalf, FFull]),
+fen_board([R1, R2, R3, R4, R5, R6, R7, R8], FenBoard) :-
+  fen_row(FR1, R1),
+  fen_row(FR2, R2),
+  fen_row(FR3, R3),
+  fen_row(FR4, R4),
+  fen_row(FR5, R5),
+  fen_row(FR6, R6),
+  fen_row(FR7, R7),
+  fen_row(FR8, R8),
+  concat_atom([FR8, FR7, FR6, FR5, FR4, FR3, FR2, FR1], FenBoard).
+
+fen_row(Row, Row) :-
+  write(Row), nl.
+  % parse_row(FenRow, 8, [], Row).
+
+parse_row([], 0, Done, Done) :- !.
+
+parse_row([FenDigit|FenRest], I, Before, After) :-
+  atom_number(FenDigit, Digit), !,
+  between(1, I, Digit),
+  Left is I - Digit,
+  length(Nothings, Digit),
+  maplist(=(nothing), Nothings),
+  append(Before, Nothings, ParsedNothings),
+  parse_row(FenRest, Left, ParsedNothings, After).
+
+parse_row([FenPiece|FenRest], I, Before, After) :-
+  Left is I - 1,
+  parse_piece(FenPiece, Piece),
+  append(Before, [Piece], ParsedPiece),
+  parse_row(FenRest, Left, ParsedPiece, After).
+
+fen_string([Board, Turn, C, EP, Half, Full], FenStr) :-
+  fen_board(Board, FBoard),
+
+  parse_turn(FTurn, Turn),
+
+  concat_atom([FTurn, C, EP, Half, Full], ' ', FenStr).
+
+parse(FenStr, [Board, Turn, C, EP, HalfCount, FullCount]) :-
+  split_string(FenStr, " ", "", [FBoard, FTurn, C, EP, FHalf, FFull]),
 
   parse_board(FBoard, Board),
 
