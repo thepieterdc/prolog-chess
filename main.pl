@@ -9,7 +9,7 @@
 :- initialization(main).
 
 main(Argv) :-
-  fen:parse("pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp b - - 0 1", State),
+  fen:parse("2Pp4/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp/pppppppp b - - 0 1", State),
 
   write(State),
 
