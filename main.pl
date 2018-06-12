@@ -15,11 +15,11 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
-  state:board(State, Board),
+  fen:parse(FenRevRaw, State),
 
-  draw:drawBoard(Board),
+  atom_codes(FenRev, FenRevRaw),
 
-  write(Board),
+  write(FenRev),
 
   % fen:parse(ResultString, State),
 

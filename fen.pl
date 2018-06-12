@@ -6,9 +6,9 @@ parse(FenString, State) :-
   phrase(state(State), FenString).
 
 state([Board, Turn, Castling, EnPassant, HalfCount, FullCount]) -->
-  board(Board), white, turn(Turn), white, castling(Castling),
-  white, en_passant(EnPassant), white, half_count(HalfCount),
-  white, full_count(FullCount).
+  board(Board), " ", turn(Turn), " ", castling(Castling),
+  " ", en_passant(EnPassant), " ", half_count(HalfCount),
+  " ", full_count(FullCount).
 
 board(board(R1, R2, R3, R4, R5, R6, R7, R8)) -->
   row(R8),"/",row(R7),"/",row(R6),"/",row(R5),
@@ -57,18 +57,13 @@ pieces([], 0) --> [].
 
 pieces([H|R], Left) --> piece(H, Left, Left1),  pieces(R, Left1).
 
-row(row(A, B, C, D, E, F, G, H)) -->
+row(row(A, B, C, D, E, F, G, H)) --> {nonvar(A), !},
+  pieces([[A], [B], [C], [D], [E], [F], [G], [H]], 8).
+
+row(row(A, B, C, D, E, F, G, H)) --> {var(A), !},
   pieces(Row, 8),
   {
-    flatten(Row, RowF),
-    nth1(1, RowF, A),
-    nth1(2, RowF, B),
-    nth1(3, RowF, C),
-    nth1(4, RowF, D),
-    nth1(5, RowF, E),
-    nth1(6, RowF, F),
-    nth1(7, RowF, G),
-    nth1(8, RowF, H)
+    flatten(Row, [A, B, C, D, E, F, G, H])
   }.
 
 turn(black) --> "b".
