@@ -3,6 +3,7 @@
 :- set_prolog_flag(double_quotes, codes).
 
 :- use_module(board).
+:- use_module(draw).
 :- use_module(fen).
 :- use_module(state).
 
@@ -14,6 +15,12 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
-  write(State),
+  state:board(State, Board),
+
+  draw:drawBoard(Board),
+
+  write(Board),
+
+  % fen:parse(ResultString, State),
 
   halt(0).

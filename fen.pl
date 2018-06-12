@@ -10,7 +10,9 @@ state([Board, Turn, Castling, EnPassant, HalfCount, FullCount]) -->
   white, en_passant(EnPassant), white, half_count(HalfCount),
   white, full_count(FullCount).
 
-board(Rows) --> rows(Rows).
+board(board(R1, R2, R3, R4, R5, R6, R7, R8)) -->
+  row(R8),"/",row(R7),"/",row(R6),"/",row(R5),
+  "/",row(R4),"/",row(R3),"/",row(R2),"/",row(R1).
 
 castling([]) --> "-".
 
@@ -36,7 +38,8 @@ piece(piece(rook, white)) --> "R".
 piece([Piece], Left, Left1) -->
   piece(Piece),
   {
-    Left1 is Left-1
+    Left1 is Left-1,
+    Left1 >= 0
   }.
 
 piece(Empties, Left, Left1) -->
@@ -46,7 +49,8 @@ piece(Empties, Left, Left1) -->
     between(1, 8, I),
     length(Empties, I),
     maplist(=(none), Empties),
-    Left1 is Left - I
+    Left1 is Left - I,
+    Left1 >= 0
   }.
 
 pieces([], 0) --> [].
@@ -66,10 +70,6 @@ row(row(A, B, C, D, E, F, G, H)) -->
     nth1(7, RowF, G),
     nth1(8, RowF, H)
   }.
-
-rows(rows(R1, R2, R3, R4, R5, R6, R7, R8)) -->
-  row(R8),"/",row(R7),"/",row(R6),"/",row(R5),
-  "/",row(R4),"/",row(R3),"/",row(R2),"/",row(R1).
 
 turn(black) --> "b".
 turn(white) --> "w".
