@@ -1,4 +1,4 @@
-:- module(draw, [drawBoard/1]).
+:- module(draw, []).
 
 asciiPiece(bishop(black), '\u265D').
 asciiPiece(king(black), '\u265A').
