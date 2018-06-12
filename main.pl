@@ -12,11 +12,16 @@ main(Argv) :-
   fen:parse(FenString, State),
 
   state:board(State, Board),
-
-  write(Board), nl, nl,
+  state:turn(State, Turn),
+  state:castling(State, Castling),
+  state:en_passant(State, EnPassant),
+  state:half_count(State, HalfCount),
+  state:full_count(State, FullCount),
 
   board:set_piece(Board, coordinate(1, 1), bishop(black), Board2),
 
-  write(Board2),
+  fen:parse(FenResult, [Board2, Turn, Castling, EnPassant, HalfCount, FullCount]),
+
+  write(FenResult),
 
   halt(0).
