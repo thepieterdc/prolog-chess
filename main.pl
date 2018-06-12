@@ -14,4 +14,4 @@ main(Argv) :-
 
   draw:drawBoard(Board),
 
-  halt.
+  halt(0).
