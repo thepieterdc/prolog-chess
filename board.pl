@@ -23,7 +23,7 @@ nth1_piece(row(_, _, _, _, _, P, _, _), 6, P).
 nth1_piece(row(_, _, _, _, _, _, P, _), 7, P).
 nth1_piece(row(_, _, _, _, _, _, _, P), 8, P).
 
-piece_at(Board, coordinate(R, C), Piece) :-
+piece_at(Board, square(R, C), Piece) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, Piece).
 
@@ -45,7 +45,9 @@ row_replace(board(R1, R2, R3, R4, R5, _, R7, R8), 6, R, board(R1, R2, R3, R4, R5
 row_replace(board(R1, R2, R3, R4, R5, R6, _, R8), 7, R, board(R1, R2, R3, R4, R5, R6, R, R8)).
 row_replace(board(R1, R2, R3, R4, R5, R6, R7, _), 8, R, board(R1, R2, R3, R4, R5, R6, R7, R)).
 
-set_piece(Before, coordinate(R, C), Piece, After) :-
+set_piece(Before, square(R, C), Piece, After) :-
   nth1_row(Before, R, RowBefore),
   piece_replace(RowBefore, C, Piece, RowAfter),
   row_replace(Before, R, RowAfter, After).
+
+square --> {between(1, 8, R), between(1, 8, C)}, [square(R, C)].

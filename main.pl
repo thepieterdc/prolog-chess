@@ -5,6 +5,7 @@
 :- use_module(board).
 :- use_module(draw).
 :- use_module(fen).
+:- use_module(movement).
 :- use_module(state).
 
 :- initialization(main).
@@ -19,8 +20,6 @@ main(Argv) :-
 
   draw:drawBoard(Board),
 
-  board:move_piece(Board, coordinate(1, 1), coordinate(2, 1), Board2),
-
-  draw:drawBoard(Board2),
+  movement:best(State),
 
   halt(0).

@@ -1,4 +1,5 @@
 :- module(pawn, []).
 
-piece(pawn, black).
-piece(pawn, white).
+:- use_module(board).
+
+pawn_move(State) --> square(State).
