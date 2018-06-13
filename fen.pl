@@ -46,36 +46,48 @@ piece(piece(queen, white)) --> "Q".
 piece(piece(rook, black)) --> "r".
 piece(piece(rook, white)) --> "R".
 
-piece([Piece], Left, Left1) -->
+piece(Piece, Left, Left1) -->
   piece(Piece),
   {
     Left1 is Left-1,
     Left1 >= 0
   }.
 
-piece(Empties, Left, Left1) -->
-  digit(Char),
-  {
-    number_codes(I, [Char]),
-    between(1, 8, I),
-    length(Empties, I),
-    maplist(=(none), Empties),
-    Left1 is Left - I,
-    Left1 >= 0
-  }.
-
 pieces([], 0) --> [].
 
-pieces([H|R], Left) --> piece(H, Left, Left1),  pieces(R, Left1).
+pieces([none, none, none, none, none, none, none, none], 8) --> "8".
+pieces([none, none, none, none, none, none, none | X], I) --> "7", !,
+  {I1 is I-7, I1 >= 0},
+  pieces(X, I1).
+pieces([none, none, none, none, none, none | X], I) --> "6", !,
+  {I1 is I-6, I1 >= 0},
+  pieces(X, I1).
+pieces([none, none, none, none, none | X], I) --> "5", !,
+  {I1 is I-5, I1 >= 0},
+  pieces(X, I1).
+pieces([none, none, none, none | X], I) --> "4", !,
+  {I1 is I-4, I1 >= 0},
+  pieces(X, I1).
+pieces([none, none, none | X], I) --> "3",
+  {I1 is I-3, I1 >= 0},
+  pieces(X, I1).
+pieces([none, none | X], I) --> "2",
+  {I1 is I-2, I1 >= 0},
+  pieces(X, I1).
+pieces([none | X], I) --> "1", !,
+  {I1 is I-1, I1 >= 0},
+  pieces(X, I1).
 
-row(row(A, B, C, D, E, F, G, H)) --> {nonvar(A), !},
-  pieces([[A], [B], [C], [D], [E], [F], [G], [H]], 8).
+pieces([H|R], Left) --> piece(H, Left, Left1), pieces(R, Left1).
 
 row(row(A, B, C, D, E, F, G, H)) --> {var(A), !},
   pieces(Row, 8),
   {
     flatten(Row, [A, B, C, D, E, F, G, H])
   }.
+
+row(row(A, B, C, D, E, F, G, H)) --> {nonvar(A), !},
+  pieces([A, B, C, D, E, F, G, H], 8).
 
 turn(black) --> "b".
 turn(white) --> "w".
