@@ -6,7 +6,7 @@ parse(FenString, State) :-
   phrase(state(State), FenString).
 
 state([Board, Turn, Castling, EnPassant, HalfCount, FullCount]) -->
-  board(Board), " ", turn(Turn), " ", castling(Castling),
+  board(Board), " ", turn(Turn), " ", castlings(Castling),
   " ", en_passant(EnPassant), " ", half_count(HalfCount),
   " ", full_count(FullCount).
 
@@ -14,7 +14,18 @@ board(board(R1, R2, R3, R4, R5, R6, R7, R8)) -->
   row(R8),"/",row(R7),"/",row(R6),"/",row(R5),
   "/",row(R4),"/",row(R3),"/",row(R2),"/",row(R1).
 
-castling([]) --> "-".
+castlings([]) --> "-", !.
+castlings(Cs) --> castling_possibilities(Cs).
+% castlings[] kan niet opnieuw gebruikt worden want dan zou K-kq ook geldig zijn
+castling_possibilities([]) --> [].
+castling_possibilities([C | Cs]) -->
+  castling(C),
+  castling_possibilities(Cs).
+
+castling(castling(kingside, black)) --> "k".
+castling(castling(kingside, white)) --> "K".
+castling(castling(queenside, black)) --> "q".
+castling(castling(queenside, white)) --> "Q".
 
 en_passant([]) --> "-".
 

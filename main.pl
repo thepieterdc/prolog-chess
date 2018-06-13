@@ -21,6 +21,4 @@ main(Argv) :-
 
   write(FenRev),
 
-  % fen:parse(ResultString, State),
-
   halt(0).
