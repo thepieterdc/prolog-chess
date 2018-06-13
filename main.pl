@@ -19,7 +19,7 @@ main(Argv) :-
 
   draw:drawBoard(Board),
 
-  board:set_piece(Board, coordinate(1, 1), none, Board2),
+  board:move_piece(Board, coordinate(1, 1), coordinate(2, 1), Board2),
 
   draw:drawBoard(Board2),
 
