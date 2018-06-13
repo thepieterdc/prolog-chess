@@ -1,15 +1,42 @@
 :- module(board, []).
 
-set_piece(Before, coordinate(X, Y), Piece, After) :-
-  nth1(Y, Before, Row),
-  replace_nth1(Row, X, Piece, ReplacedRow),
-  replace_nth1(Before, Y, ReplacedRow, After).
+row_replace(board(_, R2, R3, R4, R5, R6, R7, R8), 1, R, board(R, R2, R3, R4, R5, R6, R7, R8)).
+row_replace(board(R1, _, R3, R4, R5, R6, R7, R8), 2, R, board(R1, R, R3, R4, R5, R6, R7, R8)).
+row_replace(board(R1, R2, _, R4, R5, R6, R7, R8), 3, R, board(R1, R2, R, R4, R5, R6, R7, R8)).
+row_replace(board(R1, R2, R3, _, R5, R6, R7, R8), 4, R, board(R1, R2, R3, R, R5, R6, R7, R8)).
+row_replace(board(R1, R2, R3, R4, _, R6, R7, R8), 5, R, board(R1, R2, R3, R4, R, R6, R7, R8)).
+row_replace(board(R1, R2, R3, R4, R5, _, R7, R8), 6, R, board(R1, R2, R3, R4, R5, R, R7, R8)).
+row_replace(board(R1, R2, R3, R4, R5, R6, _, R8), 7, R, board(R1, R2, R3, R4, R5, R6, R, R8)).
+row_replace(board(R1, R2, R3, R4, R5, R6, R7, _), 8, R, board(R1, R2, R3, R4, R5, R6, R7, R)).
 
-piece_at(Board, coordinate(X, Y), Piece) :-
-  nth1(Y, Board, Row),
-  nth1(X, Row, Piece).
+piece_replace(row(_, P2, P3, P4, P5, P6, P7, P8), 1, P, row(P, P2, P3, P4, P5, P6, P7, P8)).
+piece_replace(row(P1, _, P3, P4, P5, P6, P7, P8), 2, P, row(P1, P, P3, P4, P5, P6, P7, P8)).
+piece_replace(row(P1, P2, _, P4, P5, P6, P7, P8), 3, P, row(P1, P2, P, P4, P5, P6, P7, P8)).
+piece_replace(row(P1, P2, P3, _, P5, P6, P7, P8), 4, P, row(P1, P2, P3, P, P5, P6, P7, P8)).
+piece_replace(row(P1, P2, P3, P4, _, P6, P7, P8), 5, P, row(P1, P2, P3, P4, P, P6, P7, P8)).
+piece_replace(row(P1, P2, P3, P4, P5, _, P7, P8), 6, P, row(P1, P2, P3, P4, P5, P, P7, P8)).
+piece_replace(row(P1, P2, P3, P4, P5, P6, _, P8), 7, P, row(P1, P2, P3, P4, P5, P6, P, P8)).
+piece_replace(row(P1, P2, P3, P4, P5, P6, P7, _), 8, P, row(P1, P2, P3, P4, P5, P6, P7, P)).
 
-replace_nth1([_|Xs], 1, R, [R|Xs]) :- !.
-replace_nth1([X|Xs], N, R, [X|Ys]) :-
-  N1 is N - 1,
-  replace_nth1(Xs, N1, R, Ys).
+nth1_row(board(R, _, _, _, _, _, _, _), 1, R).
+nth1_row(board(_, R, _, _, _, _, _, _), 2, R).
+nth1_row(board(_, _, R, _, _, _, _, _), 3, R).
+nth1_row(board(_, _, _, R, _, _, _, _), 4, R).
+nth1_row(board(_, _, _, _, R, _, _, _), 5, R).
+nth1_row(board(_, _, _, _, _, R, _, _), 6, R).
+nth1_row(board(_, _, _, _, _, _, R, _), 7, R).
+nth1_row(board(_, _, _, _, _, _, _, R), 8, R).
+
+nth1_piece(row(P, _, _, _, _, _, _, _), 1, P).
+nth1_piece(row(_, P, _, _, _, _, _, _), 2, P).
+nth1_piece(row(_, _, P, _, _, _, _, _), 3, P).
+nth1_piece(row(_, _, _, P, _, _, _, _), 4, P).
+nth1_piece(row(_, _, _, _, P, _, _, _), 5, P).
+nth1_piece(row(_, _, _, _, _, P, _, _), 6, P).
+nth1_piece(row(_, _, _, _, _, _, P, _), 7, P).
+nth1_piece(row(_, _, _, _, _, _, _, P), 8, P).
+
+set_piece(Before, coordinate(R, C), Piece, After) :-
+  nth1_row(Before, R, RowBefore),
+  piece_replace(RowBefore, C, Piece, RowAfter),
+  row_replace(Before, R, RowAfter, After).

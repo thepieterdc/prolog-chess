@@ -18,9 +18,7 @@ castlings([]) --> "-", !.
 castlings(Cs) --> castling_possibilities(Cs).
 % castlings[] kan niet opnieuw gebruikt worden want dan zou K-kq ook geldig zijn
 castling_possibilities([]) --> [].
-castling_possibilities([C | Cs]) -->
-  castling(C),
-  castling_possibilities(Cs).
+castling_possibilities([C | Cs]) --> castling(C), castling_possibilities(Cs).
 
 castling(castling(kingside, black)) --> "k".
 castling(castling(kingside, white)) --> "K".
@@ -46,12 +44,7 @@ piece(piece(queen, white)) --> "Q".
 piece(piece(rook, black)) --> "r".
 piece(piece(rook, white)) --> "R".
 
-piece(Piece, Left, Left1) -->
-  piece(Piece),
-  {
-    Left1 is Left-1,
-    Left1 >= 0
-  }.
+piece(Piece, Left, Left1) --> piece(Piece), {Left1 is Left-1, Left1 >= 0}.
 
 pieces([], 0) --> [].
 
