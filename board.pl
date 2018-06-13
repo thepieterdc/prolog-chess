@@ -1,5 +1,9 @@
 :- module(board, []).
 
+free(Board, square(R, C)) :-
+  nth1_row(Board, R, Row),
+  nth1_piece(Row, C, none).
+
 move_piece(Before, From, To, After) :-
   piece_at(Before, From, Piece),
   set_piece(Before, From, none, Removed),
