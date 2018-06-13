@@ -50,4 +50,4 @@ set_piece(Before, square(R, C), Piece, After) :-
   piece_replace(RowBefore, C, Piece, RowAfter),
   row_replace(Before, R, RowAfter, After).
 
-square --> {between(1, 8, R), between(1, 8, C)}, [square(R, C)].
+square(square(R, C)) --> {between(1, 8, R), between(1, 8, C)}.
