@@ -16,10 +16,14 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
-  state:board(State, Board),
+  movement:best(State, Move),
 
-  draw:drawBoard(Board),
+  state:apply_move(State, Move, State2),
 
-  movement:best(State),
+  fen:parse(ResultFen, State2),
+
+  atom_codes(ResultRaw, ResultFen),
+
+  write(ResultRaw),
 
   halt(0).
