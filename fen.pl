@@ -25,7 +25,23 @@ castling(castling(kingside, white)) --> "K".
 castling(castling(queenside, black)) --> "q".
 castling(castling(queenside, white)) --> "Q".
 
-en_passant([]) --> "-".
+en_passant(none) --> "-".
+en_passant(square(1,3)) --> "a3".
+en_passant(square(2,3)) --> "b3".
+en_passant(square(3,3)) --> "c3".
+en_passant(square(4,3)) --> "d3".
+en_passant(square(5,3)) --> "e3".
+en_passant(square(6,3)) --> "f3".
+en_passant(square(7,3)) --> "g3".
+en_passant(square(8,3)) --> "h3".
+en_passant(square(1,6)) --> "a6".
+en_passant(square(2,6)) --> "b6".
+en_passant(square(3,6)) --> "c6".
+en_passant(square(4,6)) --> "d6".
+en_passant(square(5,6)) --> "e6".
+en_passant(square(6,6)) --> "f6".
+en_passant(square(7,6)) --> "g6".
+en_passant(square(8,6)) --> "h6".
 
 full_count(N) --> integer(N), {N > 0}.
 
