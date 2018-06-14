@@ -1,5 +1,3 @@
-#!/usr/bin/env swipl
-
 :- module(pawn, []).
 
 :- use_module(board).
@@ -7,10 +5,9 @@
 :- use_module(movement).
 :- use_module(state).
 
-:- initialization(main).
-
 at(Board, Color, Square) :- board:piece_at(Board, Square, piece(pawn, Color)).
 
+% Regular pawn moves
 move(State) --> board:square(Square),
   {
     state:board(State, Board),
@@ -22,16 +19,4 @@ move(State) --> board:square(Square),
 
     board:free(Board, Destination)
   },
-  [Destination].
-
-main(Argv) :-
-  atomic_list_concat(Argv, ' ', FenRaw),
-  atom_codes(FenRaw, FenString),
-
-  fen:parse(FenString, State),
-
-  phrase(pawn:move(State), Y),
-
-  nl, write(Y),
-
-  halt(0).
+  [move(move, Square, Destination)].
