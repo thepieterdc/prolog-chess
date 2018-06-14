@@ -3,7 +3,7 @@
 :- use_module(board).
 :- use_module(pawn, [move//1 as pawn_move]).
 
-best(State, Move) :- phrase(pawn_move(State), [Move]).
+best(State, Move) :- phrase(pawn_move(State), Moves), nth0(0, Moves, Move).
 
 forward(square(SR, C), black, square(SR1, C)) :- SR1 is SR - 1, SR1 >= 1.
 forward(square(SR, C), white, square(SR1, C)) :- SR1 is SR + 1, SR1 =< 8.

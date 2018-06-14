@@ -1,5 +1,10 @@
 :- module(board, []).
 
+clear(Before, square(R, C), After) :-
+  nth1_row(Before, R, RowBefore),
+  piece_replace(RowBefore, C, none, RowAfter),
+  row_replace(Before, R, RowAfter, After).
+
 free(Board, square(R, C)) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, none).

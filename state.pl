@@ -21,6 +21,27 @@ apply_move(Before, move(move, From, To), After) :-
   % Full count
   inc_fullcount(HCState, After).
 
+apply_move(Before, move(promotion, Piece, From, To), After) :-
+  board(Before, BeforeBoard),
+  turn(Before, Turn),
+
+  % Board
+  board:clear(BeforeBoard, From, ClearedBoard),
+  board:set_piece(ClearedBoard, To, piece(Piece, Turn), AfterBoard),
+  update_board(Before, AfterBoard, BoardState),
+
+  % Turn
+  update_turn(BoardState, TurnState),
+
+  % En passant
+  update_enpassant(TurnState, none, EnPassantState),
+
+  % Half count
+  reset_halfcount(EnPassantState, HCState),
+
+  % Full count
+  inc_fullcount(HCState, After).
+
 board([Board | _], Board).
 
 castling([_, _, C | _], C).
@@ -39,6 +60,8 @@ half_count([_, _, _, _, HC | _], HC).
 inc_halfcount([B, T, C, EP, _, FC], piece(pawn, _), [B, T, C, EP, 0, FC]) :- !.
 inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
   succ(HC, HC1).
+
+reset_halfcount([B, T, C, EP, _, FC], [B, T, C, EP, 0, FC]).
 
 turn([_, Turn | _], Turn).
 
