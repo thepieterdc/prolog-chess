@@ -16,9 +16,17 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
+  state:board(State, Board),
+
+  draw:drawBoard(Board),
+
   movement:best(State, Move),
 
   state:apply_move(State, Move, State2),
+
+  state:board(State2, Board2),
+
+  draw:drawBoard(Board2),
 
   fen:parse(ResultFen, State2),
 

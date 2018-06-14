@@ -7,7 +7,7 @@
 
 at(Board, Color, Square) :- board:piece_at(Board, Square, piece(pawn, Color)).
 
-% Regular pawn moves
+% Regular pawn moves.
 move(State) --> board:square(Square),
   {
     state:board(State, Board),
@@ -15,7 +15,9 @@ move(State) --> board:square(Square),
 
     at(Board, Turn, Square),
 
-    movement:forward(Square, 1, Turn, Destination),
+    movement:pawn_forward(Square, Turn, Destination),
+
+    movement:path_forward_clear(Board, Square, Turn, Destination),
 
     board:free(Board, Destination)
   },
