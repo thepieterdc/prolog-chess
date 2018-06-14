@@ -12,8 +12,11 @@ apply_move(Before, move(move, From, To), After) :-
   % Turn
   update_turn(BoardState, TurnState),
 
+  % En passant
+  update_enpassant(TurnState, none, EnPassantState),
+
   % Half count
-  inc_halfcount(TurnState, MovedPiece, HCState),
+  inc_halfcount(EnPassantState, MovedPiece, HCState),
 
   % Full count
   inc_fullcount(HCState, After).
@@ -40,6 +43,8 @@ inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
 turn([_, Turn | _], Turn).
 
 update_board([_, T, C, EP, HC, FC], Board, [Board, T, C, EP, HC, FC]).
+
+update_enpassant([B, T, C, _, HC, FC], EP, [B, T, C, EP, HC, FC]).
 
 update_turn([B, white, C, EP, HC, FC], [B, black, C, EP, HC, FC]).
 update_turn([B, black, C, EP, HC, FC], [B, white, C, EP, HC, FC]).
