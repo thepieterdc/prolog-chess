@@ -4,6 +4,7 @@
 :- use_module(bishop, [move//1 as bishop_move]).
 :- use_module(knight, [move//1 as knight_move]).
 :- use_module(pawn, [move//1 as pawn_move]).
+:- use_module(queen, [move//1 as queen_move]).
 :- use_module(rook, [move//1 as rook_move]).
 
 best(State, Move) :-
@@ -27,10 +28,11 @@ knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C + 1.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
 
-move(State) --> bishop_move(State).
-move(State) --> knight_move(State).
-move(State) --> pawn_move(State).
-move(State) --> rook_move(State).
+% move(State) --> bishop_move(State).
+% move(State) --> knight_move(State).
+% move(State) --> pawn_move(State).
+move(State) --> queen_move(State).
+% move(State) --> rook_move(State).
 
 % checkt niet de square zelf want bij bvb capture kan dit de bedoeling zijn dat die niet free is.
 path_clear(Board, From, Color, Direction, To) :-
@@ -68,6 +70,23 @@ position(square(R, C), black, left, square(R, C1)) :- C1 is C + 1, C1 =< 8.
 position(square(R, C), white, left, square(R, C1)) :- C1 is C - 1, C1 >= 1.
 position(square(R, C), black, right, square(R, C1)) :- C1 is C - 1, C1 >= 1.
 position(square(R, C), white, right, square(R, C1)) :- C1 is C + 1, C1 =< 8.
+
+queen(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
+queen(square(R, C), white, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
+queen(square(R, C), black, backward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C - I.
+queen(square(R, C), white, backward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C + I.
+queen(square(R, C), black, forward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C + I.
+queen(square(R, C), white, forward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C - I.
+queen(square(R, C), black, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
+queen(square(R, C), white, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
+queen(square(R, C), black, backward, square(R1, C)) :- between(1, 8, R1), R1 > R.
+queen(square(R, C), white, backward, square(R1, C)) :- between(1, 8, R1), R1 < R.
+queen(square(R, C), black, forward, square(R1, C)) :- between(1, 8, R1), R > R1.
+queen(square(R, C), white, forward, square(R1, C)) :- between(1, 8, R1), R < R1.
+queen(square(R, C), black, left, square(R, C1)) :- between(1, 8, C1), C1 > C.
+queen(square(R, C), white, left, square(R, C1)) :- between(1, 8, C1), C1 < C.
+queen(square(R, C), black, right, square(R, C1)) :- between(1, 8, C1), C1 < C.
+queen(square(R, C), white, right, square(R, C1)) :- between(1, 8, C1), C1 > C.
 
 rook(square(R, C), black, backward, square(R1, C)) :- between(1, 8, R1), R1 > R.
 rook(square(R, C), white, backward, square(R1, C)) :- between(1, 8, R1), R1 < R.
