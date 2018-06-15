@@ -1,12 +1,23 @@
 :- module(movement, []).
 
 :- use_module(board).
+:- use_module(knight, [move//1 as knight_move]).
 :- use_module(pawn, [move//1 as pawn_move]).
 :- use_module(rook, [move//1 as rook_move]).
 
 best(State, Move) :-
   phrase(move(State), Moves), nth0(0, Moves, Move).
 
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C + 2.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C - 2.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 1, C1 is C + 2.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 1, C1 is C - 2.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 2, C1 is C + 1.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 2, C1 is C - 1.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C + 1.
+knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
+
+move(State) --> knight_move(State).
 move(State) --> pawn_move(State).
 move(State) --> rook_move(State).
 
