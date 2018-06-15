@@ -16,7 +16,7 @@ move(State) --> board:square(Square),
     at(Board, Turn, Square),
 
     movement:king(Square, Destination),
-    
+
     board:enemy(Board, Destination, Turn)
   },
   [move(capture, Square, Destination)].

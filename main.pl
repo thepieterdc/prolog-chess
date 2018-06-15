@@ -16,14 +16,16 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
-  movement:best(State, Move), !,
+  movement:all_moves(State, Moves),
 
-  state:apply_move(State, Move, State2),
+  write(Moves),
 
-  fen:parse(ResultFen, State2),
+  % state:apply_move(State, Move, State2),
 
-  atom_codes(ResultRaw, ResultFen),
+  % fen:parse(ResultFen, State2),
 
-  write(ResultRaw),
+  % atom_codes(ResultRaw, ResultFen),
+
+  % write(ResultRaw),
 
   halt(0).

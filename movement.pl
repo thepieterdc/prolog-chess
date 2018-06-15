@@ -8,6 +8,9 @@
 :- use_module(queen, [move//1 as queen_move]).
 :- use_module(rook, [move//1 as rook_move]).
 
+all_moves(State, Moves) :-
+  phrase(move(State), Moves).
+
 best(State, Move) :-
   phrase(move(State), Moves), nth0(0, Moves, Move).
 
