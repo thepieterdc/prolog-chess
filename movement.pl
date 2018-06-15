@@ -1,12 +1,22 @@
 :- module(movement, []).
 
 :- use_module(board).
+:- use_module(bishop, [move//1 as bishop_move]).
 :- use_module(knight, [move//1 as knight_move]).
 :- use_module(pawn, [move//1 as pawn_move]).
 :- use_module(rook, [move//1 as rook_move]).
 
 best(State, Move) :-
   phrase(move(State), Moves), nth0(0, Moves, Move).
+
+bishop(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
+bishop(square(R, C), white, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
+bishop(square(R, C), black, backward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C - I.
+bishop(square(R, C), white, backward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C + I.
+bishop(square(R, C), black, forward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C + I.
+bishop(square(R, C), white, forward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C - I.
+bishop(square(R, C), black, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
+bishop(square(R, C), white, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
 
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C + 2.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C - 2.
@@ -17,6 +27,7 @@ knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C + 1.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
 
+move(State) --> bishop_move(State).
 move(State) --> knight_move(State).
 move(State) --> pawn_move(State).
 move(State) --> rook_move(State).
@@ -43,6 +54,10 @@ pawn_forward(square(2, C), white, square(4, C)) :- between(1, 8 ,C).
 
 position(square(R, C), black, backward, square(R1, C)) :- R1 is R - 1, R1 >= 1.
 position(square(R, C), white, backward, square(R1, C)) :- R1 is R + 1, R1 =< 8.
+position(square(R, C), black, backward_left, square(R1, C1)) :- R1 is R + 1, C1 is C + 1, R1 =< 8, C1 =< 8.
+position(square(R, C), white, backward_left, square(R1, C1)) :- R1 is R - 1, C1 is C - 1, R1 >= 1, C1 >= 1.
+position(square(R, C), black, backward_right, square(R1, C1)) :- R1 is R + 1, C1 is C - 1, R1 =< 8, C1 >= 1.
+position(square(R, C), white, backward_right, square(R1, C1)) :- R1 is R - 1, C1 is C + 1, R1 >= 1, C1 =< 8.
 position(square(R, C), black, forward, square(R1, C)) :- R1 is R - 1, R1 >= 1.
 position(square(R, C), white, forward, square(R1, C)) :- R1 is R + 1, R1 =< 8.
 position(square(R, C), black, forward_left, square(R1, C1)) :- R1 is R - 1, C1 is C + 1, R1 >= 1, C1 =< 8.
