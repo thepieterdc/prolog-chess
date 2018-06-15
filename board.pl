@@ -5,6 +5,9 @@ clear(Before, square(R, C), After) :-
   piece_replace(RowBefore, C, none, RowAfter),
   row_replace(Before, R, RowAfter, After).
 
+enemy(Board, Square, black) :- piece_at(Board, Square, piece(_, white)).
+enemy(Board, Square, white) :- piece_at(Board, Square, piece(_, black)).
+
 free(Board, square(R, C)) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, none).
