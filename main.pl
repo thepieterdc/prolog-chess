@@ -16,6 +16,10 @@ main(Argv) :-
 
   fen:parse(FenString, State),
 
+  state:board(State, Bord),
+
+  draw:drawBoard(Bord),
+
   movement:all_moves(State, Moves),
 
   write(Moves),

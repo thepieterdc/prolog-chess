@@ -1,18 +1,32 @@
 :- module(movement, []).
 
 :- use_module(board).
-:- use_module(bishop, [move//1 as bishop_move]).
-:- use_module(king, [move//1 as king_move]).
-:- use_module(knight, [move//1 as knight_move]).
-:- use_module(pawn, [move//1 as pawn_move]).
-:- use_module(queen, [move//1 as queen_move]).
-:- use_module(rook, [move//1 as rook_move]).
+% :- use_module(bishop, [move/2 as bishop_move]).
+% :- use_module(king, [move//1 as king_move]).
+:- use_module(knight, [move/4 as knight_move]).
+% :- use_module(pawn, [move//1 as pawn_move]).
+% :- use_module(queen, [move//1 as queen_move]).
+:- use_module(rook, [move/4 as rook_move]).
+:- use_module(state).
 
 all_moves(State, Moves) :-
-  phrase(move(State), Moves).
+  findall(X, board:square(X), AllSquares),
+  maplist(all_moves(State), AllSquares, AllMoves),
+  flatten(AllMoves, Moves).
 
-best(State, Move) :-
-  phrase(move(State), Moves), nth0(0, Moves, Move).
+all_moves(State, Square, Moves) :-
+  state:turn(State, Turn),
+  state:piece_at(State, Square, piece(Type, Turn)), !,
+  all_moves(State, Square, piece(Type, Turn), Moves).
+all_moves(_, _, []).
+
+all_moves(State, Square, piece(knight, Turn), Moves) :- setof(X, knight_move(State, Square, Turn, X), Moves), !.
+  % move(State, Moves) :- bishop_move(State, Moves).
+  % move(State, Moves) :- king_move(State, Moves).
+  % move(State, Moves) :- pawn_move(State, Moves).
+  % move(State, Moves) :- queen_move(State, Moves).
+all_moves(State, Square, piece(rook, Turn), Moves) :- setof(X, rook_move(State, Square, Turn, X), Moves), !.
+all_moves(_, _, _, []).
 
 bishop(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
 bishop(square(R, C), white, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
@@ -40,13 +54,6 @@ knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 2, C1 is C - 1.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C + 1.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
-
-move(State) --> bishop_move(State).
-move(State) --> king_move(State).
-move(State) --> knight_move(State).
-move(State) --> pawn_move(State).
-move(State) --> queen_move(State).
-move(State) --> rook_move(State).
 
 % checkt niet de square zelf want bij bvb capture kan dit de bedoeling zijn dat die niet free is.
 path_clear(Board, From, Color, Direction, To) :-

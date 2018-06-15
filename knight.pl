@@ -1,36 +1,21 @@
 :- module(knight, []).
 
 :- use_module(board).
-:- use_module(fen).
 :- use_module(movement).
 :- use_module(state).
 
-at(Board, Color, Square) :- board:piece_at(Board, Square, piece(knight, Color)).
-
 % Knight capture.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, Square, Turn, move(capture, Square, Destination)) :-
+  state:board(State, Board),
 
-    at(Board, Turn, Square),
+  movement:knight(Square, Destination),
 
-    movement:knight(Square, Destination),
+  board:enemy(Board, Destination, Turn).
 
-    board:enemy(Board, Destination, Turn)
-  },
-  [move(capture, Square, Destination)].
+% Knight walk.
+move(State, Square, _, [move(move, Square, Destination)]) :-
+  state:board(State, Board),
 
-% Knight moves.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+  movement:knight(Square, Destination),
 
-    at(Board, Turn, Square),
-
-    movement:knight(Square, Destination),
-
-    board:free(Board, Destination)
-  },
-  [move(move, Square, Destination)].
+  board:free(Board, Destination).

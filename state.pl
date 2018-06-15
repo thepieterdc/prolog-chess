@@ -95,6 +95,8 @@ inc_halfcount([B, T, C, EP, _, FC], piece(pawn, _), [B, T, C, EP, 0, FC]) :- !.
 inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
   succ(HC, HC1).
 
+piece_at(State, Square, Piece) :- board(State, Board), board:piece_at(Board, Square, Piece).
+
 reset_enpassant([B, T, C, _, HC, FC], [B, T, C, none, HC, FC]).
 
 reset_halfcount([B, T, C, EP, _, FC], [B, T, C, EP, 0, FC]).

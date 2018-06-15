@@ -8,20 +8,19 @@
 at(Board, Color, Square) :- board:piece_at(Board, Square, piece(bishop, Color)).
 
 % Bishop capture.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, move(capture, Square, Destination)) :-
+  board:square(Square),
 
-    at(Board, Turn, Square),
+  state:board(State, Board),
+  state:turn(State, Turn),
 
-    movement:bishop(Square, Turn, Direction, Destination),
+  at(Board, Turn, Square),
 
-    movement:path_clear(Board, Square, Turn, Direction, Destination),
+  movement:bishop(Square, Turn, Direction, Destination),
 
-    board:enemy(Board, Destination, Turn)
-  },
-  [move(capture, Square, Destination)].
+  movement:path_clear(Board, Square, Turn, Direction, Destination),
+
+  board:enemy(Board, Destination, Turn).
 
 % Bishop moves.
 move(State) --> board:square(Square),
