@@ -15,7 +15,7 @@ move(State) --> board:square(Square),
 
     at(Board, Turn, Square),
 
-    movement:rook(Square, Directon, Destination),
+    movement:rook(Square, Turn, Direction, Destination),
 
     movement:path_clear(Board, Square, Turn, Direction, Destination),
 
@@ -31,7 +31,7 @@ move(State) --> board:square(Square),
 
     at(Board, Turn, Square),
 
-    movement:rook(Square, Direction, Destination),
+    movement:rook(Square, Turn, Direction, Destination),
 
     movement:path_clear(Board, Square, Turn, Direction, Destination),
 
