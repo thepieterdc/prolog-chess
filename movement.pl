@@ -28,11 +28,11 @@ knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C + 1.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
 
-% move(State) --> bishop_move(State).
-% move(State) --> knight_move(State).
-% move(State) --> pawn_move(State).
+move(State) --> bishop_move(State).
+move(State) --> knight_move(State).
+move(State) --> pawn_move(State).
 move(State) --> queen_move(State).
-% move(State) --> rook_move(State).
+move(State) --> rook_move(State).
 
 % checkt niet de square zelf want bij bvb capture kan dit de bedoeling zijn dat die niet free is.
 path_clear(Board, From, Color, Direction, To) :-

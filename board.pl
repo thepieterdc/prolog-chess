@@ -1,5 +1,11 @@
 :- module(board, []).
 
+%king/rook%
+castling_squares(castling(kingside, black), square(8, 5), square(8, 8)).
+castling_squares(castling(kingside, white), square(1, 5), square(1, 8)).
+castling_squares(castling(queenside, black), square(8, 5), square(8, 1)).
+castling_squares(castling(queenside, white), square(1, 5), square(1, 1)).
+
 clear(Before, square(R, C), After) :-
   nth1_row(Before, R, RowBefore),
   piece_replace(RowBefore, C, none, RowAfter),

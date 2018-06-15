@@ -10,8 +10,11 @@ apply_move(Before, move(capture, From, To), After) :-
   % Turn
   update_turn(BoardState, TurnState),
 
+  % Castling
+  update_castling(TurnState, CastlingState),
+
   % En passant
-  reset_enpassant(TurnState, EnPassantState),
+  reset_enpassant(CastlingState, EnPassantState),
 
   % Half count
   reset_halfcount(EnPassantState, HCState),
@@ -31,8 +34,11 @@ apply_move(Before, move(move, From, To), After) :-
   % Turn
   update_turn(BoardState, TurnState),
 
+  % Castling
+  update_castling(TurnState, CastlingState),
+
   % En passant
-  reset_enpassant(TurnState, EnPassantState),
+  reset_enpassant(CastlingState, EnPassantState),
 
   % Half count
   inc_halfcount(EnPassantState, MovedPiece, HCState),
@@ -52,8 +58,11 @@ apply_move(Before, move(promotion, Piece, From, To), After) :-
   % Turn
   update_turn(BoardState, TurnState),
 
+  % Castling
+  update_castling(TurnState, CastlingState),
+
   % En passant
-  reset_enpassant(TurnState, EnPassantState),
+  reset_enpassant(CastlingState, EnPassantState),
 
   % Half count
   reset_halfcount(EnPassantState, HCState),
@@ -63,9 +72,21 @@ apply_move(Before, move(promotion, Piece, From, To), After) :-
 
 board([Board | _], Board).
 
+can_castle(Board, castling(Type, Color)) :-
+  board:castling_squares(castling(Type, Color), KingSquare, RookSquare),
+  board:piece_at(Board, KingSquare, piece(king, Color)),
+  board:piece_at(Board, RookSquare, piece(rook, Color)).
+
 castling([_, _, C | _], C).
 
 en_passant([_, _, _, EP | _], EP).
+
+filter_castling(_, [], Done, Done).
+filter_castling(Board, [C | Castlings], Before, After) :-
+  can_castle(Board, C),
+  append(Before, [C], Filtered),
+  filter_castling(Board, Castlings, Filtered, After).
+filter_castling(Board, [_ | Castlings], After, After) :- filter_castling(Board, Castlings, After, After).
 
 full_count([_, _, _, _, _, FC], FC).
 
@@ -88,6 +109,9 @@ reset_halfcount([B, T, C, EP, _, FC], [B, T, C, EP, 0, FC]).
 turn([_, Turn | _], Turn).
 
 update_board([_, T, C, EP, HC, FC], Board, [Board, T, C, EP, HC, FC]).
+
+update_castling([B, T, C, EP, HC, FC], [B, T, C1, EP, HC, FC]) :-
+   filter_castling(B, C, [], C1).
 
 update_enpassant([B, T, C, _, HC, FC], EP, [B, T, C, EP, HC, FC]).
 
