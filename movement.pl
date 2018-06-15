@@ -2,6 +2,7 @@
 
 :- use_module(board).
 :- use_module(bishop, [move//1 as bishop_move]).
+:- use_module(king, [move//1 as king_move]).
 :- use_module(knight, [move//1 as knight_move]).
 :- use_module(pawn, [move//1 as pawn_move]).
 :- use_module(queen, [move//1 as queen_move]).
@@ -19,6 +20,15 @@ bishop(square(R, C), white, forward_left, square(R1, C1)) :- between(1, 8, R1), 
 bishop(square(R, C), black, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
 bishop(square(R, C), white, forward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
 
+chebyshev_distance(square(R1, C1), square(R2, C2), I) :-
+  X is abs(C1 - C2),
+  Y is abs(R1 - R2),
+  I is max(X, Y).
+
+king(square(R, C), square(R1, C1)) :-
+  between(1, 8, R1), between(1, 8, C1),
+  chebyshev_distance(square(R, C), square(R1, C1), 1).
+
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C + 2.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R + 1, C1 is C - 2.
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 1, C1 is C + 2.
@@ -29,6 +39,7 @@ knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1
 knight(square(R, C), square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), R1 is R - 2, C1 is C - 1.
 
 move(State) --> bishop_move(State).
+move(State) --> king_move(State).
 move(State) --> knight_move(State).
 move(State) --> pawn_move(State).
 move(State) --> queen_move(State).
