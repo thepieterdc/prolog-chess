@@ -81,13 +81,6 @@ castling([_, _, C | _], C).
 
 en_passant([_, _, _, EP | _], EP).
 
-filter_castling(_, [], Done, Done).
-filter_castling(Board, [C | Castlings], Before, After) :-
-  can_castle(Board, C),
-  append(Before, [C], Filtered),
-  filter_castling(Board, Castlings, Filtered, After).
-filter_castling(Board, [_ | Castlings], After, After) :- filter_castling(Board, Castlings, After, After).
-
 full_count([_, _, _, _, _, FC], FC).
 
 % white is the next player -> black played in this move
@@ -110,8 +103,7 @@ turn([_, Turn | _], Turn).
 
 update_board([_, T, C, EP, HC, FC], Board, [Board, T, C, EP, HC, FC]).
 
-update_castling([B, T, C, EP, HC, FC], [B, T, C1, EP, HC, FC]) :-
-   filter_castling(B, C, [], C1).
+update_castling([B, T, C, EP, HC, FC], [B, T, C1, EP, HC, FC]) :- include(can_castle(B), C, C1).
 
 update_enpassant([B, T, C, _, HC, FC], EP, [B, T, C, EP, HC, FC]).
 
