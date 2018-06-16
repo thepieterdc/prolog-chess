@@ -1,5 +1,32 @@
 :- module(state, []).
 
+:- use_module(board).
+
+apply_move(Before, move(castling, Castling), After) :-
+  board(Before, BeforeBoard),
+
+  % Board
+  board:castling_squares(Castling, KingFrom, RookFrom, KingTo, RookTo),
+  board:move_piece(BeforeBoard, KingFrom, KingTo, AfterBoardKing),
+  board:move_piece(AfterBoardKing, RookFrom, RookTo, AfterBoard),
+  update_board(Before, AfterBoard, BoardState),
+
+  % Turn
+  update_turn(BoardState, TurnState),
+
+  % Castling
+  update_castling(TurnState, CastlingState),
+
+  % En passant
+  reset_enpassant(CastlingState, EnPassantState),
+
+  % Half count
+  inc_halfcount(EnPassantState, HCState),
+
+  % Full count
+  inc_fullcount(HCState, After).
+
+
 apply_move(Before, move(capture, From, To), After) :-
   board(Before, BeforeBoard),
 
@@ -120,9 +147,9 @@ apply_move(Before, move(promotion, Piece, From, To), After) :-
 board([Board | _], Board).
 
 can_castle(Board, castling(Type, Color)) :-
-  board:castling_squares(castling(Type, Color), KingSquare, RookSquare),
-  board:piece_at(Board, KingSquare, piece(king, Color)),
-  board:piece_at(Board, RookSquare, piece(rook, Color)).
+  board:castling_squares(castling(Type, Color), KingFrom, RookFrom, _, _),
+  board:piece_at(Board, KingFrom, piece(king, Color)),
+  board:piece_at(Board, RookFrom, piece(rook, Color)).
 
 castling([_, _, C | _], C).
 
@@ -137,7 +164,8 @@ inc_fullcount([B, black, C, EP, HC, FC], [B, black, C, EP, HC, FC]).
 
 half_count([_, _, _, _, HC | _], HC).
 
-inc_halfcount([B, T, C, EP, _, FC], [B, T, C, EP, 0, FC]).
+inc_halfcount([B, T, C, EP, HC, FC], [B, T, C, EP, HC1, FC]) :-
+  succ(HC, HC1).
 inc_halfcount([B, T, C, EP, _, FC], piece(pawn, _), [B, T, C, EP, 0, FC]) :- !.
 inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
   succ(HC, HC1).

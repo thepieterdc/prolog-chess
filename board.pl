@@ -1,10 +1,10 @@
 :- module(board, []).
 
-%king/rook%
-castling_squares(castling(kingside, black), square(8, 5), square(8, 8)).
-castling_squares(castling(kingside, white), square(1, 5), square(1, 8)).
-castling_squares(castling(queenside, black), square(8, 5), square(8, 1)).
-castling_squares(castling(queenside, white), square(1, 5), square(1, 1)).
+%king/rook/kingdest/rookdest%
+castling_squares(castling(kingside, black), square(8, 5), square(8, 8), square(8, 7), square(8, 6)).
+castling_squares(castling(kingside, white), square(1, 5), square(1, 8), square(1, 7), square(1, 6)).
+castling_squares(castling(queenside, black), square(8, 5), square(8, 1), square(8, 3), square(8, 6)).
+castling_squares(castling(queenside, white), square(1, 5), square(1, 1), square(1, 3), square(1, 4)).
 
 clear(Before, square(R, C), After) :-
   nth1_row(Before, R, RowBefore),
