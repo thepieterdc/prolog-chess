@@ -25,10 +25,6 @@ main(Argv) :-
   length(Argv, 6),
 
   parse(Argv, State),
-  % 
-  % state:board(State, Bord),
-  %
-  % draw:drawBoard(Bord),
 
   movement:random_move(State, Move),
 

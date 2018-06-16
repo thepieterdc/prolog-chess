@@ -20,12 +20,12 @@ all_moves(State, Square, Moves) :-
   all_moves(State, Square, piece(Type, Turn), Moves).
 all_moves(_, _, []).
 
-all_moves(State, Square, piece(bishop, Turn), Moves) :- setof(X, bishop_move(State, Square, Turn, X), Moves), !.
-all_moves(State, Square, piece(knight, Turn), Moves) :- setof(X, knight_move(State, Square, Turn, X), Moves), !.
-all_moves(State, Square, piece(king, Turn), Moves) :- setof(X, king_move(State, Square, Turn, X), Moves), !.
+% all_moves(State, Square, piece(bishop, Turn), Moves) :- setof(X, bishop_move(State, Square, Turn, X), Moves), !.
+% all_moves(State, Square, piece(knight, Turn), Moves) :- setof(X, knight_move(State, Square, Turn, X), Moves), !.
+% all_moves(State, Square, piece(king, Turn), Moves) :- setof(X, king_move(State, Square, Turn, X), Moves), !.
 all_moves(State, Square, piece(pawn, Turn), Moves) :- setof(X, pawn_move(State, Square, Turn, X), Moves), !.
-all_moves(State, Square, piece(queen, Turn), Moves) :- setof(X, queen_move(State, Square, Turn, X), Moves), !.
-all_moves(State, Square, piece(rook, Turn), Moves) :- setof(X, rook_move(State, Square, Turn, X), Moves), !.
+% all_moves(State, Square, piece(queen, Turn), Moves) :- setof(X, queen_move(State, Square, Turn, X), Moves), !.
+% all_moves(State, Square, piece(rook, Turn), Moves) :- setof(X, rook_move(State, Square, Turn, X), Moves), !.
 all_moves(_, _, _, []).
 
 bishop(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
@@ -70,10 +70,11 @@ path_clear_sub(Board, From, Color, Direction, To) :-
 pawn_capture(From, Color, To) :- position(From, Color, forward_left, To).
 pawn_capture(From, Color, To) :- position(From, Color, forward_right, To).
 
+pawn_enpassant(square(7, C), black, square(6, C), square(5, C)) :- between(1, 8, C).
+pawn_enpassant(square(2, C), white, square(3, C), square(4, C)) :- between(1, 8 ,C).
+
 pawn(From, black, To) :- position(From, black, forward, To).
-pawn(square(7, C), black, square(5, C)) :- between(1, 8, C).
 pawn(From, white, To) :- position(From, white, forward, To).
-pawn(square(2, C), white, square(4, C)) :- between(1, 8 ,C).
 
 position(square(R, C), black, backward, square(R1, C)) :- R1 is R - 1, R1 >= 1.
 position(square(R, C), white, backward, square(R1, C)) :- R1 is R + 1, R1 =< 8.

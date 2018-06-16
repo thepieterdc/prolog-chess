@@ -22,6 +22,28 @@ apply_move(Before, move(capture, From, To), After) :-
   % Full count
   inc_fullcount(HCState, After).
 
+apply_move(Before, move(en_passant, From, EPSquare, To), After) :-
+  board(Before, BeforeBoard),
+
+  % Board
+  board:move_piece(BeforeBoard, From, To, AfterBoard),
+  update_board(Before, AfterBoard, BoardState),
+
+  % Turn
+  update_turn(BoardState, TurnState),
+
+  % Castling
+  update_castling(TurnState, CastlingState),
+
+  % En passant
+  update_enpassant(CastlingState, EPSquare, EnPassantState),
+
+  % Half count
+  reset_halfcount(EnPassantState, HCState),
+  
+  % Full count
+  inc_fullcount(HCState, After).
+
 apply_move(Before, move(move, From, To), After) :-
   board(Before, BeforeBoard),
 

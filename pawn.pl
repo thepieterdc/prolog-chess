@@ -24,7 +24,15 @@ move(State, Square, Turn, PromotionMoves) :-
 
   board:enemy(Board, Destination, Turn),
 
-  findall(Move, promotion_move(Move, Square, Destination), PromotionMoves).
+  bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
+
+% En passant movement
+move(State, Square, Turn, move(en_passant, Square, EPSquare, Destination)) :-
+  state:board(State, Board),
+
+  movement:pawn_enpassant(Square, Turn, EPSquare, Destination),
+
+  board:free(Board, Destination).
 
 % Regular pawn moves.
 move(State, Square, Turn, move(move, Square, Destination)) :-
@@ -33,8 +41,6 @@ move(State, Square, Turn, move(move, Square, Destination)) :-
   movement:pawn(Square, Turn, Destination),
 
   \+ promotion_square(Destination),
-
-  movement:path_clear(Board, Square, Turn, forward, Destination),
 
   board:free(Board, Destination).
 
