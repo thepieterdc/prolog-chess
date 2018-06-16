@@ -15,6 +15,11 @@ parse(Argv, State) :-
   atom_codes(FenRaw, FenString),
   fen:parse(FenString, State).
 
+write_fen(State) :-
+  fen:parse(ResultFen, State),
+  atom_codes(ResultRaw, ResultFen),
+  write(ResultRaw),nl.
+
 % regular main
 main(Argv) :-
   length(Argv, 6),
@@ -46,18 +51,10 @@ main(Argv) :-
 
   parse(ArgvClean, State),
 
-  state:board(State, Bord),
-
-  draw:drawBoard(Bord),
-
   movement:all_moves(State, Moves),
 
-  % state:apply_move(State, Move, State2),
+  maplist(state:apply_move(State), Moves, ResultStates),
 
-  % fen:parse(ResultFen, State2),
-
-  % atom_codes(ResultRaw, ResultFen),
-
-  % write(ResultRaw),
+  maplist(write_fen(), ResultStates),
 
   halt(0).
