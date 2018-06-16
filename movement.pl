@@ -92,6 +92,12 @@ position(square(R, C), white, left, square(R, C1)) :- C1 is C - 1, C1 >= 1.
 position(square(R, C), black, right, square(R, C1)) :- C1 is C - 1, C1 >= 1.
 position(square(R, C), white, right, square(R, C1)) :- C1 is C + 1, C1 =< 8.
 
+random_move(State, Move) :-
+  all_moves(State, Moves),
+  length(Moves, AmountMoves),
+  random_between(1, AmountMoves, RandomMove),
+  nth1(RandomMove, Moves, Move).
+
 queen(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
 queen(square(R, C), white, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.
 queen(square(R, C), black, backward_right, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C - I.

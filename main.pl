@@ -25,20 +25,16 @@ main(Argv) :-
   length(Argv, 6),
 
   parse(Argv, State),
+  % 
+  % state:board(State, Bord),
+  %
+  % draw:drawBoard(Bord),
 
-  state:board(State, Bord),
+  movement:random_move(State, Move),
 
-  draw:drawBoard(Bord),
+  state:apply_move(State, Move, AfterState),
 
-  movement:all_moves(State, Moves),
-
-  % state:apply_move(State, Move, State2),
-
-  % fen:parse(ResultFen, State2),
-
-  % atom_codes(ResultRaw, ResultFen),
-
-  % write(ResultRaw),
+  write_fen(AfterState),
 
   halt(0).
 
