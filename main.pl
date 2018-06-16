@@ -10,11 +10,16 @@
 
 :- initialization(main).
 
-main(Argv) :-
+parse(Argv, State) :-
   atomic_list_concat(Argv, ' ', FenRaw),
   atom_codes(FenRaw, FenString),
+  fen:parse(FenString, State).
 
-  fen:parse(FenString, State),
+% regular main
+main(Argv) :-
+  length(Argv, 6),
+
+  parse(Argv, State),
 
   state:board(State, Bord),
 
@@ -22,7 +27,30 @@ main(Argv) :-
 
   movement:all_moves(State, Moves),
 
-  write(Moves),
+  % state:apply_move(State, Move, State2),
+
+  % fen:parse(ResultFen, State2),
+
+  % atom_codes(ResultRaw, ResultFen),
+
+  % write(ResultRaw),
+
+  halt(0).
+
+% TEST main
+main(Argv) :-
+  length(Argv, 7),
+
+  % verwijder het test arg uit de input
+  include(\=('TEST'), Argv, ArgvClean),
+
+  parse(ArgvClean, State),
+
+  state:board(State, Bord),
+
+  draw:drawBoard(Bord),
+
+  movement:all_moves(State, Moves),
 
   % state:apply_move(State, Move, State2),
 
