@@ -26,9 +26,13 @@ main(Argv) :-
 
   parse(Argv, State),
 
+  draw:drawState(State),
+
   movement:random_move(State, Move),
 
   state:apply_move(State, Move, AfterState),
+
+  draw:drawState(AfterState),
 
   write_fen(AfterState),
 

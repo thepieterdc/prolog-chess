@@ -26,8 +26,21 @@ move(State, Square, Turn, PromotionMoves) :-
 
   bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
 
+% En passant capture, enemysquare is plaats van stuk dat naast mij staat dat ik gepakt heb
+move(State, square(SR, SC), Turn, move(en_passant, square(SR, SC), square(SR, EC), square(ER, EC))) :-
+  state:board(State, Board),
+
+  state:en_passant(State, square(ER, EC)),
+
+  movement:pawn_capture(square(SR, SC), Turn, square(ER, EC)),
+
+  % stuk dat geslagen moet worden staat naast mij.
+  board:enemy(Board, square(SR, EC), Turn),
+
+  board:free(Board, square(ER, EC)).
+
 % En passant movement
-move(State, Square, Turn, move(en_passant, Square, EPSquare, Destination)) :-
+move(State, Square, Turn, move(move, Square, EPSquare, Destination)) :-
   state:board(State, Board),
 
   movement:pawn_enpassant(Square, Turn, EPSquare, Destination),
@@ -57,7 +70,7 @@ move(State, Square, Turn, PromotionMoves) :-
 
   board:free(Board, Destination),
 
-  findall(Move, promotion_move(Move, Square, Destination), PromotionMoves).
+  bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
 
 promotion_move(move(promotion, bishop, Square, Destination), Square, Destination).
 promotion_move(move(promotion, knight, Square, Destination), Square, Destination).
