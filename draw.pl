@@ -1,5 +1,7 @@
 :- module(draw, []).
 
+:- use_module(state).
+
 asciiPiece(bishop, black, '\u265D').
 asciiPiece(king, black, '\u265A').
 asciiPiece(knight, black, '\u265E').
@@ -40,3 +42,5 @@ drawRow(row(P1, P2, P3, P4, P5, P6, P7, P8)) :-
   write('   '), drawPiece(P6),
   write('   '), drawPiece(P7),
   write('   '), drawPiece(P8).
+
+drawState(State) :- state:board(State, Board), drawBoard(Board).

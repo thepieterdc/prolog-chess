@@ -76,8 +76,8 @@ pawn_enpassant(square(2, C), white, square(3, C), square(4, C)) :- between(1, 8 
 pawn(From, black, To) :- position(From, black, forward, To).
 pawn(From, white, To) :- position(From, white, forward, To).
 
-position(square(R, C), black, backward, square(R1, C)) :- R1 is R - 1, R1 >= 1.
-position(square(R, C), white, backward, square(R1, C)) :- R1 is R + 1, R1 =< 8.
+position(square(R, C), black, backward, square(R1, C)) :- R1 is R + 1, R1 =< 8.
+position(square(R, C), white, backward, square(R1, C)) :- R1 is R - 1, R1 >= 1.
 position(square(R, C), black, backward_left, square(R1, C1)) :- R1 is R + 1, C1 is C + 1, R1 =< 8, C1 =< 8.
 position(square(R, C), white, backward_left, square(R1, C1)) :- R1 is R - 1, C1 is C - 1, R1 >= 1, C1 >= 1.
 position(square(R, C), black, backward_right, square(R1, C1)) :- R1 is R + 1, C1 is C - 1, R1 =< 8, C1 >= 1.
