@@ -32,6 +32,9 @@ move(State, Square, Turn, move(en_passant, Square, EPSquare, Destination)) :-
 
   movement:pawn_enpassant(Square, Turn, EPSquare, Destination),
 
+  % hier on ook path_clear voor gebruikt worden maar owell
+  board:free(Board, EPSquare),
+
   board:free(Board, Destination).
 
 % Regular pawn moves.
