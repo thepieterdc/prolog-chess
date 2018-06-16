@@ -13,7 +13,7 @@ move(State, Square, Turn, move(capture, Square, Destination)) :-
   board:enemy(Board, Destination, Turn).
 
 % Knight walk.
-move(State, Square, _, [move(move, Square, Destination)]) :-
+move(State, Square, _, move(move, Square, Destination)) :-
   state:board(State, Board),
 
   movement:knight(Square, Destination),

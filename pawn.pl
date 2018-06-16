@@ -1,87 +1,60 @@
 :- module(pawn, []).
 
 :- use_module(board).
-:- use_module(fen).
 :- use_module(movement).
 :- use_module(state).
 
-at(Board, Color, Square) :- board:piece_at(Board, Square, piece(pawn, Color)).
-
 % Pawn capture.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, Square, Turn, move(capture, Square, Destination)) :-
+  state:board(State, Board),
 
-    at(Board, Turn, Square),
+  movement:pawn_capture(Square, Turn, Destination),
 
-    movement:pawn_capture(Square, Turn, Destination),
+  \+ promotion_square(Destination),
 
-    \+ promotion_square(Turn, Destination),
-
-    board:enemy(Board, Destination, Turn)
-  },
-  [move(capture, Square, Destination)].
+  board:enemy(Board, Destination, Turn).
 
 % Pawn capture+promotion.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, Square, Turn, PromotionMoves) :-
+  state:board(State, Board),
 
-    at(Board, Turn, Square),
+  movement:pawn_capture(Square, Turn, Destination),
 
-    movement:pawn_capture(Square, Turn, Destination),
+  promotion_square(Destination),
 
-    promotion_square(Turn, Destination),
+  board:enemy(Board, Destination, Turn),
 
-    board:enemy(Board, Destination, Turn)
-  },
-  [
-    move(promotion, bishop, Square, Destination),
-    move(promotion, knight, Square, Destination),
-    move(promotion, queen, Square, Destination),
-    move(promotion, rook, Square, Destination)
-  ].
+  findall(Move, promotion_move(Move, Square, Destination), PromotionMoves).
 
 % Regular pawn moves.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, Square, Turn, move(move, Square, Destination)) :-
+  state:board(State, Board),
 
-    at(Board, Turn, Square),
+  movement:pawn(Square, Turn, Destination),
 
-    movement:pawn_forward(Square, Turn, Destination),
+  \+ promotion_square(Destination),
 
-    \+ promotion_square(Turn, Destination),
+  movement:path_clear(Board, Square, Turn, forward, Destination),
 
-    movement:path_clear(Board, Square, Turn, forward, Destination),
-
-    board:free(Board, Destination)
-  },
-  [move(move, Square, Destination)].
+  board:free(Board, Destination).
 
 % Pawn promotion.
-move(State) --> board:square(Square),
-  {
-    state:board(State, Board),
-    state:turn(State, Turn),
+move(State, Square, Turn, PromotionMoves) :-
+  state:board(State, Board),
 
-    at(Board, Turn, Square),
+  movement:pawn(Square, Turn, Destination),
 
-    movement:pawn_forward(Square, Turn, Destination),
+  promotion_square(Destination),
 
-    promotion_square(Turn, Destination),
+  board:free(Board, Destination),
 
-    board:free(Board, Destination)
-  },
-  [
-    move(promotion, bishop, Square, Destination),
-    move(promotion, knight, Square, Destination),
-    move(promotion, queen, Square, Destination),
-    move(promotion, rook, Square, Destination)
-  ].
+  findall(Move, promotion_move(Move, Square, Destination), PromotionMoves).
 
-promotion_square(black, square(1, _)).
-promotion_square(white, square(8, _)).
+promotion_move(move(promotion, bishop, Square, Destination), Square, Destination).
+promotion_move(move(promotion, knight, Square, Destination), Square, Destination).
+promotion_move(move(promotion, queen, Square, Destination), Square, Destination).
+promotion_move(move(promotion, rook, Square, Destination), Square, Destination).
+
+% turn maakt niet uit want pion kan toch niet achteruit
+promotion_square(square(1, _)).
+promotion_square(square(8, _)).
