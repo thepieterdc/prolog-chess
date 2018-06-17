@@ -18,6 +18,8 @@ free(Board, square(R, C)) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, none).
 
+mine(Board, Square, Player) :- piece_at(Board, Square, piece(_, Player)).
+
 move_piece(Before, From, To, After) :-
   piece_at(Before, From, Piece),
   set_piece(Before, From, none, Removed),

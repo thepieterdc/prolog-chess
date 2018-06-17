@@ -144,6 +144,14 @@ apply_move(Before, move(promotion, Piece, From, To), After) :-
   % Full count
   inc_fullcount(HCState, After).
 
+attacking(Board, Player, Square) :-
+  board:piece_at(Board, Position, piece(Type, Player)),
+  movement:attacking(piece(Type, Player), Position, Square).
+
+attacking_squares(Board, Player, Attacked) :-
+  findall(X, board:square(X), AllSquares),
+  include(attacking(Board, Player), AllSquares, Attacked).
+
 board([Board | _], Board).
 
 can_castle(Board, castling(Type, Color)) :-
@@ -152,6 +160,14 @@ can_castle(Board, castling(Type, Color)) :-
   board:piece_at(Board, RookFrom, piece(rook, Color)).
 
 castling([_, _, C | _], C).
+
+check(Board, Player) :-
+  board:piece_at(Board, KingSquare, piece(king, Player)),
+  enemy(Player, Enemy),
+  attacking(Board, Enemy, KingSquare).
+
+enemy(black, white).
+enemy(white, black).
 
 en_passant([_, _, _, EP | _], EP).
 

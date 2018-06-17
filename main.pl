@@ -43,10 +43,18 @@ main(Argv) :-
 
   parse(ArgvClean, State),
 
-  movement:all_moves(State, Moves),
+  state:board(State, Board),
 
-  maplist(state:apply_move(State), Moves, ResultStates),
+  draw:drawBoard(Board),
 
-  maplist(write_fen(), ResultStates),
+  state:attacking_squares(Board, white, Squares),
+
+  write(Squares),
+
+  % movement:all_moves(State, Moves),
+
+  % maplist(state:apply_move(State), Moves, ResultStates),
+
+  % maplist(write_fen(), ResultStates),
 
   halt(0).
