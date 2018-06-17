@@ -52,6 +52,9 @@ main(Argv) :-
   movement:all_moves(State, Moves),
 
   maplist(state:apply_move(State), Moves, ResultStates),
+  length(ResultStates, AmountStates),
+  % geen geldige moves dus draw
+  AmountStates > 0,
 
   include(filter(Player), ResultStates, CheckedStates),
 

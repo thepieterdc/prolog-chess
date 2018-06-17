@@ -183,7 +183,7 @@ inc_halfcount([B, T, C, EP, HC, FC], [B, T, C, EP, HC1, FC]) :-
   succ(HC, HC1).
 inc_halfcount([B, T, C, EP, _, FC], piece(pawn, _), [B, T, C, EP, 0, FC]) :- !.
 inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
-  succ(HC, HC1).
+  succ(HC, HC1), HC1 < 75. %remise
 
 piece_at(State, Square, Piece) :- board(State, Board), board:piece_at(Board, Square, Piece).
 
