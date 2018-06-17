@@ -15,10 +15,11 @@ parse(Argv, State) :-
   atom_codes(FenRaw, FenString),
   fen:parse(FenString, State).
 
-write_fen(State) :-
+write_one_fen(Player, State) :-
+  \+ state:check(State, Player),
   fen:parse(ResultFen, State),
   atom_codes(ResultRaw, ResultFen),
-  write(ResultRaw),nl.
+  write(ResultRaw), nl.
 
 % regular main
 main(Argv) :-
@@ -30,7 +31,7 @@ main(Argv) :-
 
   state:apply_move(State, Move, AfterState),
 
-  write_fen(AfterState),
+  write("TODO IMPLEMENT MINMAX BOI"), write(AfterState),
 
   halt(0).
 
@@ -43,18 +44,12 @@ main(Argv) :-
 
   parse(ArgvClean, State),
 
-  state:board(State, Board),
+  state:turn(State, Player),
 
-  draw:drawBoard(Board),
+  movement:all_moves(State, Moves),
 
-  state:attacking_squares(Board, white, Squares),
+  maplist(state:apply_move(State), Moves, ResultStates),
 
-  write(Squares),
-
-  % movement:all_moves(State, Moves),
-
-  % maplist(state:apply_move(State), Moves, ResultStates),
-
-  % maplist(write_fen(), ResultStates),
+  maplist(write_one_fen(Player), ResultStates),
 
   halt(0).

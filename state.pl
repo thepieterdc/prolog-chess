@@ -161,10 +161,9 @@ can_castle(Board, castling(Type, Color)) :-
 
 castling([_, _, C | _], C).
 
-check(Board, Player) :-
-  board:piece_at(Board, KingSquare, piece(king, Player)),
-  enemy(Player, Enemy),
-  attacking(Board, Enemy, KingSquare).
+check(State, Player) :-
+  board(State, Board),
+  board:check(Board, Player).
 
 enemy(black, white).
 enemy(white, black).
