@@ -146,7 +146,7 @@ apply_move(Before, move(promotion, Piece, From, To), After) :-
 
 attacking(Board, Player, Square) :-
   board:piece_at(Board, Position, piece(Type, Player)),
-  movement:attacking(piece(Type, Player), Position, Square).
+  movement:attacking(Board, piece(Type, Player), Position, Square).
 
 attacking_squares(Board, Player, Attacked) :-
   findall(X, board:square(X), AllSquares),

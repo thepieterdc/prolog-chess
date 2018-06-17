@@ -28,12 +28,18 @@ all_moves(State, Square, piece(queen, Turn), Moves) :- setof(X, queen_move(State
 all_moves(State, Square, piece(rook, Turn), Moves) :- setof(X, rook_move(State, Square, Turn, X), Moves), !.
 all_moves(_, _, _, []).
 
-attacking(piece(bishop, _), Current, Target) :- bishop(Current, _, _, Target).
-attacking(piece(king, _), Current, Target) :- king(Current, Target).
-attacking(piece(knight, _), Current, Target) :- knight(Current, Target).
-attacking(piece(pawn, Color), Current, Target) :- pawn_capture(Current, Color, Target).
-attacking(piece(queen, _), Current, Target) :- queen(Current, _, _, Target).
-attacking(piece(rook, _), Current, Target) :- rook(Current, _, _, Target).
+attacking(Board, piece(bishop, _), Current, Target) :-
+  bishop(Current, Turn, Direction, Target),
+  path_clear(Board, Current, Turn, Direction, Target).
+attacking(_, piece(king, _), Current, Target) :- king(Current, Target).
+attacking(_, piece(knight, _), Current, Target) :- knight(Current, Target).
+attacking(_, piece(pawn, Color), Current, Target) :- pawn_capture(Current, Color, Target).
+attacking(Board, piece(queen, _), Current, Target) :-
+  queen(Current, Turn, Direction, Target),
+  path_clear(Board, Current, Turn, Direction, Target).
+attacking(Board, piece(rook, _), Current, Target) :-
+  rook(Current, Turn, Direction, Target),
+  path_clear(Board, Current, Turn, Direction, Target).
 
 bishop(square(R, C), black, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R + I, C1 is C + I.
 bishop(square(R, C), white, backward_left, square(R1, C1)) :- between(1, 8, R1), between(1, 8, C1), between(1, 7, I), R1 is R - I, C1 is C - I.

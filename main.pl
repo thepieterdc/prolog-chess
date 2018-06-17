@@ -10,13 +10,18 @@
 
 :- initialization(main).
 
+% filters checked states, bij solo is dit niet nodig want minimax fixt dit wel
+filter(Player, State) :-
+  \+ state:check(State, Player).
+
 parse(Argv, State) :-
   atomic_list_concat(Argv, ' ', FenRaw),
   atom_codes(FenRaw, FenString),
   fen:parse(FenString, State).
 
-write_one_fen(Player, State) :-
-  \+ state:check(State, Player),
+write_draw() :- write("DRAW"), nl.
+
+write_fen(State) :-
   fen:parse(ResultFen, State),
   atom_codes(ResultRaw, ResultFen),
   write(ResultRaw), nl.
@@ -24,15 +29,13 @@ write_one_fen(Player, State) :-
 % regular main
 main(Argv) :-
   length(Argv, 6),
-
-  parse(Argv, State),
-
-  movement:random_move(State, Move),
-
-  state:apply_move(State, Move, AfterState),
-
-  write("TODO IMPLEMENT MINMAX BOI"), write(AfterState),
-
+%
+%   parse(Argv, State),
+% % %
+% %   movement:random_move(State, Move),
+% % %
+% %   state:apply_move(State, Move, AfterState),
+%
   halt(0).
 
 % TEST main
@@ -50,6 +53,16 @@ main(Argv) :-
 
   maplist(state:apply_move(State), Moves, ResultStates),
 
-  maplist(write_one_fen(Player), ResultStates),
+  include(filter(Player), ResultStates, CheckedStates),
+
+  maplist(write_fen(), CheckedStates),
+
+  halt(0).
+
+% when main fails we assume draw.
+main(Argv) :-
+  (length(Argv, 6) ; length(Argv, 7)),
+
+  write_draw(),
 
   halt(0).
