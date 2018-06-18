@@ -19,7 +19,9 @@ parse(Argv, State) :-
   atom_codes(FenRaw, FenString),
   fen:parse(FenString, State).
 
-write_draw() :- write("DRAW"), nl.
+write_draw() :-
+  atom_codes(Draw, "DRAW"),
+  write(Draw), nl.
 
 write_fen(State) :-
   fen:parse(ResultFen, State),
