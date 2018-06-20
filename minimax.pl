@@ -52,7 +52,7 @@ score(State, Player, Score) :-
   state:enemy(Player, Enemy),
   score_sub(State, Player, MyScore),
   score_sub(State, Enemy, EnemyScore),
-  Score is MyScore - EnemyScore, write(Score).
+  Score is MyScore - EnemyScore.
 
 score_sub(State, Turn, Score) :-
   findall(Type, state:piece_at(State, _, piece(Type, Turn)), Pieces),

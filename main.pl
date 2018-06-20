@@ -37,7 +37,7 @@ main(Argv) :-
 
   minimax:minimax(State, 1, NextState),
 
-  write(NextState),
+  write_fen(NextState),
 
   halt(0).
 
