@@ -1,5 +1,6 @@
 :- module(minimax, []).
 
+:- use_module(draw).
 :- use_module(movement).
 :- use_module(state).
 
@@ -20,7 +21,7 @@ betterOf(State1, Score1, _, Score2, Player, State1, Score1) :-
 
 % enemy's turn -> minimize
 betterOf(State1, Score1, _, Score2, Player, State1, Score1) :-
-  state:turn(State1, Player),
+  \+ state:turn(State1, Player),
   Score1 < Score2, !.
 
 betterOf(_, _, State2, Score2, _, State2, Score2).
@@ -29,8 +30,8 @@ minimax(Initial, Depth, Next) :-
   state:turn(Initial, Player),
   minimax(Initial, Player, Depth, Next, _).
 
-minimax(State, Player, 0, _, Score) :-
-  score(State, Player, Score), !.
+minimax(State, _, 0, _, Score) :-
+  score(State, Score), !.
 
 minimax(Current, Player, Depth, BestNextState, Score) :-
   movement:all_moves(Current, NextMoves),
@@ -38,8 +39,8 @@ minimax(Current, Player, Depth, BestNextState, Score) :-
   best(NextStates, Player, Depth, BestNextState, Score), !.
 
 % geen moves meer
-minimax(State, Player, _, _, Score) :-
-  score(State, Player, Score).
+minimax(State, _, _, _, Score) :-
+  score(State, Score).
 
 piece_score(bishop, 3).
 piece_score(king, 1000).
@@ -48,13 +49,14 @@ piece_score(pawn, 1).
 piece_score(queen, 9).
 piece_score(rook, 5).
 
-score(State, Player, Score) :-
+score(State, Score) :-
+  state:turn(State, Player),
   state:enemy(Player, Enemy),
   score_sub(State, Player, MyScore),
   score_sub(State, Enemy, EnemyScore),
   Score is MyScore - EnemyScore.
 
-score_sub(State, Turn, Score) :-
-  findall(Type, state:piece_at(State, _, piece(Type, Turn)), Pieces),
+score_sub(State, Player, Score) :-
+  findall(Type, state:piece_at(State, _, piece(Type, Player)), Pieces),
   maplist(piece_score, Pieces, PieceScores),
   sum_list(PieceScores, Score).

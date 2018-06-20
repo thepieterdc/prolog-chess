@@ -27,6 +27,8 @@ drawBoard(board(R1, R2, R3, R4, R5, R6, R7, R8)) :-
   write('   '), drawRow(R1), write('    1'), nl, nl,
   write('   a   b   c   d   e   f   g   h'), nl, nl.
 
+drawBoard(state(Board, _, _, _, _, _)) :- drawBoard(Board).
+
 drawLine(0, _) :- !.
 drawLine(N, C) :- N1 is N-1, write(C), drawLine(N1, C).
 
@@ -42,5 +44,3 @@ drawRow(row(P1, P2, P3, P4, P5, P6, P7, P8)) :-
   write('   '), drawPiece(P6),
   write('   '), drawPiece(P7),
   write('   '), drawPiece(P8).
-
-drawState(State) :- state:board(State, Board), drawBoard(Board).
