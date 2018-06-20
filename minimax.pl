@@ -3,11 +3,10 @@
 :- use_module(movement).
 :- use_module(state).
 
-best([State], Player, State, Score) :- minimax(State, Player, _, Score), !.
+best([State], Player, Depth, State, Score) :- minimax(State, Player, Depth, _, Score), !.
 
 best([State1 | States], Player, Depth, BestState, BestScore) :-
   Deeper is Depth - 1,
-  write(Deeper),
   minimax(State1, Player, Deeper, _, Score1),
   best(States, Player, Depth, State2, Score2),
   betterOf(State1, Score1, State2, Score2, Player, BestState, BestScore).
