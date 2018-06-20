@@ -16,22 +16,23 @@ best([State1 | States], Player, Depth, BestState, BestScore) :-
 
 % my turn -> maximize
 betterOf(State1, Score1, _, Score2, Player, State1, Score1) :-
-  state:turn(State1, Player),
+  \+ state:turn(State1, Player),
   Score1 > Score2, !.
 
 % enemy's turn -> minimize
 betterOf(State1, Score1, _, Score2, Player, State1, Score1) :-
-  \+ state:turn(State1, Player),
+  state:turn(State1, Player),
   Score1 < Score2, !.
 
+% the first state was not the desired one
 betterOf(_, _, State2, Score2, _, State2, Score2).
 
-minimax(Initial, Depth, Next) :-
-  state:turn(Initial, Player),
-  minimax(Initial, Player, Depth, Next, _).
+minimax(InitialState, MaxDepth, BestState) :-
+  state:turn(InitialState, Player),
+  minimax(InitialState, Player, MaxDepth, BestState, BestScore), write(BestScore).
 
-minimax(State, _, 0, _, Score) :-
-  score(State, Score), !.
+minimax(State, Player, 0, _, Score) :-
+  score(State, Player, Score), !.
 
 minimax(Current, Player, Depth, BestNextState, Score) :-
   movement:all_moves(Current, NextMoves),
@@ -39,8 +40,10 @@ minimax(Current, Player, Depth, BestNextState, Score) :-
   best(NextStates, Player, Depth, BestNextState, Score), !.
 
 % geen moves meer
-minimax(State, _, _, _, Score) :-
-  score(State, Score).
+minimax(State, Player, _, _, Score) :-
+  score(State, Player, Score).
+
+% als king dood is cut
 
 piece_score(bishop, 3).
 piece_score(king, 1000).
@@ -49,8 +52,7 @@ piece_score(pawn, 1).
 piece_score(queen, 9).
 piece_score(rook, 5).
 
-score(State, Score) :-
-  state:turn(State, Player),
+score(State, Player, Score) :-
   state:enemy(Player, Enemy),
   score_sub(State, Player, MyScore),
   score_sub(State, Enemy, EnemyScore),
