@@ -35,7 +35,7 @@ main(Argv) :-
 
   parse(Argv, State),
 
-  minimax:minimax(State, 2, NextState),
+  minimax:alphabeta(State, 3, NextState),
 
   write_fen(NextState),
 
