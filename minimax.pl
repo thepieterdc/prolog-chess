@@ -58,15 +58,3 @@ score_sub(State, Turn, Score) :-
   findall(Type, state:piece_at(State, _, piece(Type, Turn)), Pieces),
   maplist(piece_score, Pieces, PieceScores),
   sum_list(PieceScores, Score).
-
-% score_sub(State, Player, Score) :-
-%   state:
-
-% piece_score()
-%
-% % score_sub(State, Player, Score) :-
-% %   score_sub(State, BlackScore).
-% %
-% % score_sub(State, Player, Score) :-
-% %
-% %   score_black(State, BlackScore).
