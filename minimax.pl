@@ -29,7 +29,7 @@ betterOf(_, _, State2, Score2, _, State2, Score2).
 
 minimax(InitialState, MaxDepth, BestState) :-
   state:turn(InitialState, Player),
-  minimax(InitialState, Player, MaxDepth, BestState, BestScore), write(BestScore).
+  minimax(InitialState, Player, MaxDepth, BestState, _).
 
 minimax(State, Player, 0, _, Score) :-
   score(State, Player, Score), !.
