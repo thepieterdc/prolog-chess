@@ -5,7 +5,7 @@
 parse(FenString, State) :-
   phrase(state(State), FenString).
 
-state([Board, Turn, Castling, EnPassant, HalfCount, FullCount]) -->
+state(state(Board, Turn, Castling, EnPassant, HalfCount, FullCount)) -->
   board(Board), " ", turn(Turn), " ", castlings(Castling),
   " ", en_passant(EnPassant), " ", half_count(HalfCount),
   " ", full_count(FullCount).

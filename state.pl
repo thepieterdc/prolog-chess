@@ -152,14 +152,14 @@ attacking_squares(Board, Player, Attacked) :-
   findall(X, board:square(X), AllSquares),
   include(attacking(Board, Player), AllSquares, Attacked).
 
-board([Board | _], Board).
+board(state(Board, _, _, _, _, _), Board).
 
 can_castle(Board, castling(Type, Color)) :-
   board:castling_squares(castling(Type, Color), KingFrom, RookFrom, _, _),
   board:piece_at(Board, KingFrom, piece(king, Color)),
   board:piece_at(Board, RookFrom, piece(rook, Color)).
 
-castling([_, _, C | _], C).
+castling(state(_, _, C, _, _, _), C).
 
 check(State, Player) :-
   board(State, Board),
@@ -168,36 +168,36 @@ check(State, Player) :-
 enemy(black, white).
 enemy(white, black).
 
-en_passant([_, _, _, EP | _], EP).
+en_passant(state(_, _, _, EP, _, _), EP).
 
-full_count([_, _, _, _, _, FC], FC).
+full_count(state(_, _, _, _, _, FC), FC).
 
 % white is the next player -> black played in this move
-inc_fullcount([B, white, C, EP, HC, FC], [B, white, C, EP, HC, FC1]) :-
+inc_fullcount(state(B, white, C, EP, HC, FC), state(B, white, C, EP, HC, FC1)) :-
   succ(FC, FC1).
-inc_fullcount([B, black, C, EP, HC, FC], [B, black, C, EP, HC, FC]).
+inc_fullcount(state(B, black, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
 
-half_count([_, _, _, _, HC | _], HC).
+half_count(state(_, _, _, _, HC, _), HC).
 
-inc_halfcount([B, T, C, EP, HC, FC], [B, T, C, EP, HC1, FC]) :-
+inc_halfcount(state(B, T, C, EP, HC, FC), state(B, T, C, EP, HC1, FC)) :-
   succ(HC, HC1).
-inc_halfcount([B, T, C, EP, _, FC], piece(pawn, _), [B, T, C, EP, 0, FC]) :- !.
-inc_halfcount([B, T, C, EP, HC, FC], _, [B, T, C, EP, HC1, FC]) :-
+inc_halfcount(state(B, T, C, EP, _, FC), piece(pawn, _), state(B, T, C, EP, 0, FC)) :- !.
+inc_halfcount(state(B, T, C, EP, HC, FC), _, state(B, T, C, EP, HC1, FC)) :-
   succ(HC, HC1), HC1 < 75. %remise
 
 piece_at(State, Square, Piece) :- board(State, Board), board:piece_at(Board, Square, Piece).
 
-reset_enpassant([B, T, C, _, HC, FC], [B, T, C, none, HC, FC]).
+reset_enpassant(state(B, T, C, _, HC, FC), state(B, T, C, none, HC, FC)).
 
-reset_halfcount([B, T, C, EP, _, FC], [B, T, C, EP, 0, FC]).
+reset_halfcount(state(B, T, C, EP, _, FC), state(B, T, C, EP, 0, FC)).
 
-turn([_, Turn | _], Turn).
+turn(state(_, Turn, _, _, _, _), Turn).
 
-update_board([_, T, C, EP, HC, FC], Board, [Board, T, C, EP, HC, FC]).
+update_board(state(_, T, C, EP, HC, FC), Board, state(Board, T, C, EP, HC, FC)).
 
-update_castling([B, T, C, EP, HC, FC], [B, T, C1, EP, HC, FC]) :- include(can_castle(B), C, C1).
+update_castling(state(B, T, C, EP, HC, FC), state(B, T, C1, EP, HC, FC)) :- include(can_castle(B), C, C1).
 
-update_enpassant([B, T, C, _, HC, FC], EP, [B, T, C, EP, HC, FC]).
+update_enpassant(state(B, T, C, _, HC, FC), EP, state(B, T, C, EP, HC, FC)).
 
-update_turn([B, white, C, EP, HC, FC], [B, black, C, EP, HC, FC]).
-update_turn([B, black, C, EP, HC, FC], [B, white, C, EP, HC, FC]).
+update_turn(state(B, white, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
+update_turn(state(B, black, C, EP, HC, FC), state(B, white, C, EP, HC, FC)).

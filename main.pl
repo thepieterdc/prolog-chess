@@ -5,6 +5,7 @@
 :- use_module(board).
 :- use_module(draw).
 :- use_module(fen).
+:- use_module(minimax).
 :- use_module(movement).
 :- use_module(state).
 
@@ -31,43 +32,43 @@ write_fen(State) :-
 % regular main
 main(Argv) :-
   length(Argv, 6),
+
+  parse(Argv, State),
+
+  minimax:minimax(State, 1, NextState),
+
+  write(NextState),
+
+  halt(0).
+
+% % TEST main
+% main(Argv) :-
+%   length(Argv, 7),
 %
-%   parse(Argv, State),
-% % %
-% %   movement:random_move(State, Move),
-% % %
-% %   state:apply_move(State, Move, AfterState),
+%   % verwijder het test arg uit de input
+%   include(\=('TEST'), Argv, ArgvClean),
 %
-  halt(0).
-
-% TEST main
-main(Argv) :-
-  length(Argv, 7),
-
-  % verwijder het test arg uit de input
-  include(\=('TEST'), Argv, ArgvClean),
-
-  parse(ArgvClean, State),
-
-  state:turn(State, Player),
-
-  movement:all_moves(State, Moves),
-
-  maplist(state:apply_move(State), Moves, ResultStates),
-  length(ResultStates, AmountStates),
-  % geen geldige moves dus draw
-  AmountStates > 0,
-
-  include(filter(Player), ResultStates, CheckedStates),
-
-  maplist(write_fen(), CheckedStates),
-
-  halt(0).
-
-% when main fails we assume draw.
-main(Argv) :-
-  (length(Argv, 6) ; length(Argv, 7)),
-
-  write_draw(),
-
-  halt(0).
+%   parse(ArgvClean, State),
+%
+%   state:turn(State, Player),
+%
+%   movement:all_moves(State, Moves),
+%
+%   maplist(state:apply_move(State), Moves, ResultStates),
+%   length(ResultStates, AmountStates),
+%   % geen geldige moves dus draw
+%   AmountStates > 0,
+%
+%   include(filter(Player), ResultStates, CheckedStates),
+%
+%   maplist(write_fen(), CheckedStates),
+%
+%   halt(0).
+%
+% % when main fails we assume draw.
+% main(Argv) :-
+%   (length(Argv, 6) ; length(Argv, 7)),
+%
+%   write_draw(),
+%
+%   halt(0).
