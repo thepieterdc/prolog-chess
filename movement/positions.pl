@@ -39,15 +39,14 @@ knight_moves(R/C, Moves) :-
   setof(X, knight(R/C, X), Moves),
   assertz(saved_knight_moves(R/C, Moves)).
 
-knight(R/C, R1/C1) :- R < 7, C < 8, R1 is R + 2, C1 is C + 1.
-knight(R/C, R1/C1) :- R < 7, C > 1, R1 is R + 2, C1 is C - 1.
-knight(R/C, R1/C1) :- R < 8, C < 7, R1 is R + 1, C1 is C + 2.
-knight(R/C, R1/C1) :- R < 8, C > 2, R1 is R + 1, C1 is C - 2.
-
-knight(R/C, R1/C1) :- R > 1, C < 7, R1 is R - 1, C1 is C + 2.
-knight(R/C, R1/C1) :- R > 1, C > 2, R1 is R - 1, C1 is C - 2.
-knight(R/C, R1/C1) :- R > 2, C < 8, R1 is R - 2, C1 is C + 1.
-knight(R/C, R1/C1) :- R > 2, C > 1, R1 is R - 2, C1 is C - 1.
+knight(R/C, move(R/C, R1/C1)) :- R < 7, C < 8, R1 is R + 2, C1 is C + 1.
+knight(R/C, move(R/C, R1/C1)) :- R < 7, C > 1, R1 is R + 2, C1 is C - 1.
+knight(R/C, move(R/C, R1/C1)) :- R < 8, C < 7, R1 is R + 1, C1 is C + 2.
+knight(R/C, move(R/C, R1/C1)) :- R < 8, C > 2, R1 is R + 1, C1 is C - 2.
+knight(R/C, move(R/C, R1/C1)) :- R > 1, C < 7, R1 is R - 1, C1 is C + 2.
+knight(R/C, move(R/C, R1/C1)) :- R > 1, C > 2, R1 is R - 1, C1 is C - 2.
+knight(R/C, move(R/C, R1/C1)) :- R > 2, C < 8, R1 is R - 2, C1 is C + 1.
+knight(R/C, move(R/C, R1/C1)) :- R > 2, C > 1, R1 is R - 2, C1 is C - 1.
 
 queen_attacks(From, Direction, To) :- bishop(From, move(From, Direction, To)), !.
 queen_attacks(From, Direction, To) :- rook(From, move(From, Direction, To)).

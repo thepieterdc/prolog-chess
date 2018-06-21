@@ -5,11 +5,11 @@
 :- use_module(positions).
 
 % Knight capture.
-move(Board, Turn, move(From, _, To), move(capture, From, To)) :-
+move(Board, Turn, move(From, To), move(capture, From, To)) :-
   board:enemy(Board, To, Turn), !.
 
 % Knight walk.
-move(Board, _, move(From, _, To), move(move, From, To)) :-
+move(Board, _, move(From, To), move(move, From, To)) :-
   board:free(Board, To).
 
 moves(State, Square, Turn, Moves) :-

@@ -43,7 +43,7 @@ attacking(_, piece(pawn, Color), Current, Target) :- pawn_capture(Current, Color
 attacking(Board, piece(queen, _), Current, Target) :-
   positions:queen_attacks(Current, Direction, Target),
   path_clear(Board, move(Current, Direction, Target)).
-  
+
 attacking(Board, piece(rook, _), Current, Target) :-
   positions:rook_attacks(Current, Direction, Target),
   path_clear(Board, move(Current, Direction, Target)).
