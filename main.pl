@@ -3,12 +3,13 @@
 :- set_prolog_flag(gc, false).
 :- set_prolog_flag(double_quotes, chars).
 
+:- use_module(draw).
 :- use_module(fen).
 :- use_module(minimax).
 :- use_module(movement).
 :- use_module(state).
 
-:- initialization(main).
+:- initialization(main, main).
 
 % filters checked states, bij solo is dit niet nodig want minimax fixt dit wel
 filter(Player, State) :-
@@ -33,14 +34,15 @@ profileer(Argv) :-
 
   parse(Argv, State),
 
-  minimax:alphabeta(State, 1, NextState),
+  minimax:alphabeta(State, 3, NextState),
 
   write_fen(NextState).
 
 % regular main
-main(Argv) :- profileer(Argv).
+main(Argv) :-
+  profileer(Argv),
 
-  % halt(0).
+  halt(0).
 
 % % TEST main
 % main(Argv) :-
