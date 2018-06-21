@@ -5,72 +5,55 @@
 :- use_module('../state').
 
 % Pawn capture.
-move(State, Square, Turn, move(capture, Square, Destination)) :-
+capture(State, Turn, move(From, To), move(capture, From, To)) :-
   state:board(State, Board),
-
-  movement:pawn_capture(Square, Turn, Destination),
-
-  \+ promotion_square(Destination),
-
-  board:enemy(Board, Destination, Turn).
+  \+ promotion_square(To),
+  board:enemy(Board, To, Turn).
 
 % Pawn capture+promotion.
-move(State, Square, Turn, PromotionMoves) :-
+capture(State, Turn, move(From, To), PromotionMoves) :-
   state:board(State, Board),
-
-  movement:pawn_capture(Square, Turn, Destination),
-
-  promotion_square(Destination),
-
-  board:enemy(Board, Destination, Turn),
-
-  bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
+  promotion_square(To),
+  board:enemy(Board, To, Turn),
+  bagof(Move, promotion_move(Move, From, To), PromotionMoves).
 
 % En passant capture, enemysquare is plaats van stuk dat naast mij staat dat ik gepakt heb
-move(State, SR/SC, Turn, move(en_passant, SR/SC, SR/EC, ER/EC)) :-
+capture(State, Turn, move(SR/SC, DR/DC), move(en_passant, SR/SC, SR/DC, DR/DC)) :-
   state:board(State, Board),
-
-  state:en_passant(State, ER/EC),
-
-  movement:pawn_capture(SR/SC, Turn, ER/EC),
+  state:en_passant(State, SR/DC),
 
   % stuk dat geslagen moet worden staat naast mij.
-  board:enemy(Board, SR/EC, Turn),
+  board:enemy(Board, SR/DC, Turn),
 
-  board:free(Board, ER/EC).
+  board:free(Board, DR/DC).
 
-% En passant movement
-move(State, Square, Turn, move(move, Square, EPSquare, Destination)) :-
-  state:board(State, Board),
-
-  movement:pawn_enpassant(Square, Turn, EPSquare, Destination),
-
-  % hier on ook path_clear voor gebruikt worden maar owell
-  board:free(Board, EPSquare),
-
-  board:free(Board, Destination).
-
-% Regular pawn moves.
-move(State, Square, Turn, move(move, Square, Destination)) :-
-  state:board(State, Board),
-
-  movement:pawn(Square, Turn, Destination),
-
-  \+ promotion_square(Destination),
-
-  board:free(Board, Destination).
+% Pawn double moves.
+move(Board, _, move(From, EP, To), move(move, From, EP, To)) :-
+  board:free(Board, EP),
+  board:free(Board, To).
 
 % Pawn promotion.
-move(State, Square, Turn, PromotionMoves) :-
+move(Board, _, move(From, To), PromotionMoves) :-
+  promotion_square(To),
+  board:free(Board, To),
+  bagof(Move, promotion_move(Move, From, To), PromotionMoves).
+
+% Pawn walk.
+move(Board, _, move(From, To), move(move, From, To)) :-
+  \+ promotion_square(To),
+  board:free(Board, To).
+
+moves(State, Square, Turn, [Moves, Captures, EnPassants]) :-
   state:board(State, Board),
 
-  movement:pawn(Square, Turn, Destination),
+  positions:pawn(Square, Turn, PawnMove),
+  convlist(move(Board, Turn), [PawnMove], Moves),
 
-  promotion_square(Destination),
+  findall(X, positions:pawn_attacks(Square, Turn, X), PawnCaptures),
+  convlist(capture(State, Turn), PawnCaptures, Captures),
 
-  board:free(Board, Destination),
-
-  bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
+  findall(X, positions:pawn_enpassant(Square, Turn, X), EnPassantMove),
+  convlist(move(Board, Turn), EnPassantMove, EnPassants).
 
 promotion_move(move(promotion, bishop, Square, Destination), Square, Destination).
 promotion_move(move(promotion, knight, Square, Destination), Square, Destination).

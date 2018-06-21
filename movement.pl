@@ -4,7 +4,7 @@
 :- use_module('movement/bishop', [moves/4 as bishop_moves]).
 :- use_module('movement/king', [moves/4 as king_moves]).
 :- use_module('movement/knight', [moves/4 as knight_moves]).
-:- use_module('movement/pawn', [move/4 as pawn_move]).
+:- use_module('movement/pawn', [moves/4 as pawn_move]).
 :- use_module('movement/positions').
 :- use_module('movement/queen', [moves/4 as queen_moves]).
 :- use_module('movement/rook', [moves/4 as rook_moves]).
@@ -26,7 +26,7 @@ all_moves(State, Square, piece(king, Turn), Moves) :- king_moves(State, Square, 
 all_moves(State, Square, piece(knight, Turn), Moves) :- knight_moves(State, Square, Turn, Moves), !.
 all_moves(State, Square, piece(pawn, Turn), Moves) :- setof(X, pawn_move(State, Square, Turn, X), Moves), !.
 all_moves(State, Square, piece(queen, Turn), Moves) :- queen_moves(State, Square, Turn, Moves), !.
-% all_moves(State, Square, piece(rook, Turn), Moves) :- rook_moves(State, Square, Turn, Moves), !.
+all_moves(State, Square, piece(rook, Turn), Moves) :- rook_moves(State, Square, Turn, Moves), !.
 all_moves(_, _, _, []).
 
 attacking(Board, piece(bishop, _), Current, Target) :-
@@ -39,7 +39,8 @@ attacking(_, piece(king, _), Current, Target) :-
 attacking(_, piece(knight, _), Current, Target) :-
   positions:knight_attacks(Current, Target).
 
-attacking(_, piece(pawn, Color), Current, Target) :- pawn_capture(Current, Color, Target).
+attacking(_, piece(pawn, Color), Current, Target) :-
+  positions:pawn_attacks(Current, Color, Target).
 
 attacking(Board, piece(queen, _), Current, Target) :-
   positions:queen_attacks(Current, Direction, Target),
@@ -72,35 +73,3 @@ path_next(R/C, right, R/C1) :- C1 is C + 1.
 path_next(R/C, up, R1/C) :- R1 is R + 1.
 path_next(R/C, up_left, R1/C1) :- R1 is R + 1, C1 is C - 1.
 path_next(R/C, up_right, R1/C1) :- R1 is R + 1, C1 is C + 1.
-
-pawn_capture(From, Color, To) :- position(From, Color, forward_left, To).
-pawn_capture(From, Color, To) :- position(From, Color, forward_right, To).
-
-pawn_enpassant(7/C, black, 6/C, 5/C) :- between(1, 8, C).
-pawn_enpassant(2/C, white, 3/C, 4/C) :- between(1, 8 ,C).
-
-pawn(From, black, To) :- position(From, black, forward, To).
-pawn(From, white, To) :- position(From, white, forward, To).
-
-position(R/C, black, backward, R1/C) :- R1 is R + 1, R1 =< 8.
-position(R/C, white, backward, R1/C) :- R1 is R - 1, R1 >= 1.
-position(R/C, black, backward_left, R1/C1) :- R1 is R + 1, C1 is C + 1, R1 =< 8, C1 =< 8.
-position(R/C, white, backward_left, R1/C1) :- R1 is R - 1, C1 is C - 1, R1 >= 1, C1 >= 1.
-position(R/C, black, backward_right, R1/C1) :- R1 is R + 1, C1 is C - 1, R1 =< 8, C1 >= 1.
-position(R/C, white, backward_right, R1/C1) :- R1 is R - 1, C1 is C + 1, R1 >= 1, C1 =< 8.
-position(R/C, black, forward, R1/C) :- R1 is R - 1, R1 >= 1.
-position(R/C, white, forward, R1/C) :- R1 is R + 1, R1 =< 8.
-position(R/C, black, forward_left, R1/C1) :- R1 is R - 1, C1 is C + 1, R1 >= 1, C1 =< 8.
-position(R/C, white, forward_left, R1/C1) :- R1 is R + 1, C1 is C - 1, R1 =< 8, C1 >= 1.
-position(R/C, black, forward_right, R1/C1) :- R1 is R - 1, C1 is C - 1, R1 >= 1, C1 >= 1.
-position(R/C, white, forward_right, R1/C1) :- R1 is R + 1, C1 is C + 1, R1 =< 8, C1 =< 8.
-position(R/C, black, left, R/C1) :- C1 is C + 1, C1 =< 8.
-position(R/C, white, left, R/C1) :- C1 is C - 1, C1 >= 1.
-position(R/C, black, right, R/C1) :- C1 is C - 1, C1 >= 1.
-position(R/C, white, right, R/C1) :- C1 is C + 1, C1 =< 8.
-
-random_move(State, Move) :-
-  all_moves(State, Moves),
-  length(Moves, AmountMoves),
-  random_between(1, AmountMoves, RandomMove),
-  nth1(RandomMove, Moves, Move).

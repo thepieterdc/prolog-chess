@@ -67,6 +67,17 @@ knight(R/C, move(R/C, R1/C1)) :- R > 1, C > 2, R1 is R - 1, C1 is C - 2.
 knight(R/C, move(R/C, R1/C1)) :- R > 2, C < 8, R1 is R - 2, C1 is C + 1.
 knight(R/C, move(R/C, R1/C1)) :- R > 2, C > 1, R1 is R - 2, C1 is C - 1.
 
+pawn_attacks(R/C, black, move(R/C, R1/C1)) :- R > 1, C < 8, R1 is R - 1, C1 is C + 1.
+pawn_attacks(R/C, black, move(R/C, R1/C1)) :- R > 1, C > 1, R1 is R - 1, C1 is C - 1.
+pawn_attacks(R/C, white, move(R/C, R1/C1)) :- R < 8, C < 8, R1 is R + 1, C1 is C + 1.
+pawn_attacks(R/C, white, move(R/C, R1/C1)) :- R < 8, C > 1, R1 is R + 1, C1 is C - 1.
+
+pawn_enpassant(7/C, black, move(7/C, 6/C, 5/C)) :- between(1, 8, C).
+pawn_enpassant(2/C, white, move(2/C, 3/C, 4/C)) :- between(1, 8 ,C).
+
+pawn(R/C, black, move(R/C, R1/C)) :- R > 1, R1 is R - 1.
+pawn(R/C, white, move(R/C, R1/C)) :- R < 8, R1 is R + 1.
+
 queen_attacks(From, Direction, To) :- bishop(From, move(From, Direction, To)), !.
 queen_attacks(From, Direction, To) :- rook(From, move(From, Direction, To)).
 

@@ -2,8 +2,8 @@
 
 :- set_prolog_flag(gc, false).
 :- set_prolog_flag(double_quotes, chars).
+:- set_prolog_flag(stack_limit, 1 000 000 000).
 
-:- use_module(draw).
 :- use_module(fen).
 :- use_module(minimax).
 :- use_module(movement).
