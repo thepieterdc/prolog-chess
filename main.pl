@@ -29,17 +29,19 @@ write_fen(State) :-
   atom_codes(ResultRaw, ResultFen),
   write(ResultRaw), nl.
 
-% regular main
-main(Argv) :-
+profileer(Argv) :-
   length(Argv, 6),
 
   parse(Argv, State),
 
   minimax:alphabeta(State, 3, NextState),
 
-  write_fen(NextState),
+  write_fen(NextState).
 
-  halt(0).
+% regular main
+main(Argv) :- profileer(Argv).
+
+  % halt(0).
 
 % % TEST main
 % main(Argv) :-
