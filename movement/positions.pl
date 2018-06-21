@@ -31,7 +31,7 @@ bishop(R/C, move(R/C, up_right, R1/C1)) :-
   R1 is R + I, C1 is C + I,
   between(R, 8, R1), between(C, 8, C1).
 
-king_attacks(From, To) :- king(From, To).
+king_attacks(From, To) :- king(From, move(From, To)).
 
 king_moves(R/C, Moves) :-
   saved_king_moves(R/C, Moves), !.
