@@ -11,7 +11,7 @@ castling_squares(castling(queenside, white), 1/5, 1/1, 1/3, 1/4).
 check(Board, Player) :-
   piece_at(Board, KingSquare, piece(king, Player)),
   state:enemy(Player, Enemy),
-  state:attacking(Board, Enemy, KingSquare).
+  state:attacking(Board, Enemy, KingSquare), !.
 
 clear(Before, R/C, After) :-
   nth1_row(Before, R, RowBefore),
