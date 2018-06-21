@@ -40,7 +40,7 @@ profileer(Argv) :-
 
 % regular main
 main(Argv) :-
-  profileer(Argv),
+  profileer(Argv), !,
 
   halt(0).
 
@@ -64,14 +64,14 @@ main(Argv) :-
 
   include(filter(Player), ResultStates, CheckedStates),
 
-  maplist(write_fen(), CheckedStates),
+  maplist(write_fen(), CheckedStates), !,
 
   halt(0).
-%
-% % when main fails we assume draw.
-% main(Argv) :-
-%   (length(Argv, 6) ; length(Argv, 7)),
-%
-%   write_draw(),
-%
-%   halt(0).
+
+% when main fails we assume draw.
+main(Argv) :-
+  (length(Argv, 6) ; length(Argv, 7)),
+
+  write_draw(),
+
+  halt(0).
