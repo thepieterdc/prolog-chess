@@ -27,17 +27,17 @@ move(State, Square, Turn, PromotionMoves) :-
   bagof(Move, promotion_move(Move, Square, Destination), PromotionMoves).
 
 % En passant capture, enemysquare is plaats van stuk dat naast mij staat dat ik gepakt heb
-move(State, square(SR, SC), Turn, move(en_passant, square(SR, SC), square(SR, EC), square(ER, EC))) :-
+move(State, SR/SC, Turn, move(en_passant, SR/SC, SR/EC, ER/EC)) :-
   state:board(State, Board),
 
-  state:en_passant(State, square(ER, EC)),
+  state:en_passant(State, ER/EC),
 
-  movement:pawn_capture(square(SR, SC), Turn, square(ER, EC)),
+  movement:pawn_capture(SR/SC, Turn, ER/EC),
 
   % stuk dat geslagen moet worden staat naast mij.
-  board:enemy(Board, square(SR, EC), Turn),
+  board:enemy(Board, SR/EC, Turn),
 
-  board:free(Board, square(ER, EC)).
+  board:free(Board, ER/EC).
 
 % En passant movement
 move(State, Square, Turn, move(move, Square, EPSquare, Destination)) :-
@@ -78,5 +78,5 @@ promotion_move(move(promotion, queen, Square, Destination), Square, Destination)
 promotion_move(move(promotion, rook, Square, Destination), Square, Destination).
 
 % turn maakt niet uit want pion kan toch niet achteruit
-promotion_square(square(1, _)).
-promotion_square(square(8, _)).
+promotion_square(1/_).
+promotion_square(8/_).

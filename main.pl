@@ -35,7 +35,7 @@ profileer(Argv) :-
 
   parse(Argv, State),
 
-  minimax:alphabeta(State, 3, NextState),
+  minimax:alphabeta(State, 1, NextState),
 
   write_fen(NextState).
 

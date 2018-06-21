@@ -26,22 +26,22 @@ castling(castling(queenside, black)) --> "q".
 castling(castling(queenside, white)) --> "Q".
 
 en_passant(none) --> "-".
-en_passant(square(3,1)) --> "a3".
-en_passant(square(3,2)) --> "b3".
-en_passant(square(3,3)) --> "c3".
-en_passant(square(3,4)) --> "d3".
-en_passant(square(3,5)) --> "e3".
-en_passant(square(3,6)) --> "f3".
-en_passant(square(3,7)) --> "g3".
-en_passant(square(3,8)) --> "h3".
-en_passant(square(6,1)) --> "a6".
-en_passant(square(6,2)) --> "b6".
-en_passant(square(6,3)) --> "c6".
-en_passant(square(6,4)) --> "d6".
-en_passant(square(6,5)) --> "e6".
-en_passant(square(6,6)) --> "f6".
-en_passant(square(6,7)) --> "g6".
-en_passant(square(6,8)) --> "h6".
+en_passant(3/1) --> "a3".
+en_passant(3/2) --> "b3".
+en_passant(3/3) --> "c3".
+en_passant(3/4) --> "d3".
+en_passant(3/5) --> "e3".
+en_passant(3/6) --> "f3".
+en_passant(3/7) --> "g3".
+en_passant(3/8) --> "h3".
+en_passant(6/1) --> "a6".
+en_passant(6/2) --> "b6".
+en_passant(6/3) --> "c6".
+en_passant(6/4) --> "d6".
+en_passant(6/5) --> "e6".
+en_passant(6/6) --> "f6".
+en_passant(6/7) --> "g6".
+en_passant(6/8) --> "h6".
 
 full_count(N) --> integer(N), {N > 0}.
 

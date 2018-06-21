@@ -3,17 +3,17 @@
 :- use_module(state).
 
 %king/rook/kingdest/rookdest%
-castling_squares(castling(kingside, black), square(8, 5), square(8, 8), square(8, 7), square(8, 6)).
-castling_squares(castling(kingside, white), square(1, 5), square(1, 8), square(1, 7), square(1, 6)).
-castling_squares(castling(queenside, black), square(8, 5), square(8, 1), square(8, 3), square(8, 6)).
-castling_squares(castling(queenside, white), square(1, 5), square(1, 1), square(1, 3), square(1, 4)).
+castling_squares(castling(kingside, black), 8/5, 8/8, 8/7, 8/6).
+castling_squares(castling(kingside, white), 1/5, 1/8, 1/7, 1/6).
+castling_squares(castling(queenside, black), 8/5, 8/1, 8/3, 8/6).
+castling_squares(castling(queenside, white), 1/5, 1/1, 1/3, 1/4).
 
 check(Board, Player) :-
   piece_at(Board, KingSquare, piece(king, Player)),
   state:enemy(Player, Enemy),
   state:attacking(Board, Enemy, KingSquare).
 
-clear(Before, square(R, C), After) :-
+clear(Before, R/C, After) :-
   nth1_row(Before, R, RowBefore),
   piece_replace(RowBefore, C, none, RowAfter),
   row_replace(Before, R, RowAfter, After).
@@ -21,7 +21,7 @@ clear(Before, square(R, C), After) :-
 enemy(Board, Square, black) :- piece_at(Board, Square, piece(_, white)).
 enemy(Board, Square, white) :- piece_at(Board, Square, piece(_, black)).
 
-free(Board, square(R, C)) :-
+free(Board, R/C) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, none).
 
@@ -50,7 +50,7 @@ nth1_piece(row(_, _, _, _, _, P, _, _), 6, P).
 nth1_piece(row(_, _, _, _, _, _, P, _), 7, P).
 nth1_piece(row(_, _, _, _, _, _, _, P), 8, P).
 
-piece_at(Board, square(R, C), Piece) :-
+piece_at(Board, R/C, Piece) :-
   nth1_row(Board, R, Row),
   nth1_piece(Row, C, Piece).
 
@@ -72,10 +72,10 @@ row_replace(board(R1, R2, R3, R4, R5, _, R7, R8), 6, R, board(R1, R2, R3, R4, R5
 row_replace(board(R1, R2, R3, R4, R5, R6, _, R8), 7, R, board(R1, R2, R3, R4, R5, R6, R, R8)).
 row_replace(board(R1, R2, R3, R4, R5, R6, R7, _), 8, R, board(R1, R2, R3, R4, R5, R6, R7, R)).
 
-set_piece(Before, square(R, C), Piece, After) :-
+set_piece(Before, R/C, Piece, After) :-
   nth1_row(Before, R, RowBefore),
   piece_replace(RowBefore, C, Piece, RowAfter),
   row_replace(Before, R, RowAfter, After).
 
-square(square(R, C)) --> between(1, 8, R), between(1, 8, C).
-square(square(R, C)) :- between(1, 8, R), between(1, 8, C).
+square(R/C) --> between(1, 8, R), between(1, 8, C).
+square(R/C) :- between(1, 8, R), between(1, 8, C).
