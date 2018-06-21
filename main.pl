@@ -1,5 +1,6 @@
 #!/usr/bin/env swipl
 
+:- set_prolog_flag(gc, false).
 :- set_prolog_flag(double_quotes, codes).
 
 :- use_module(board).
@@ -9,7 +10,7 @@
 :- use_module(movement).
 :- use_module(state).
 
-:- initialization(main).
+% :- initialization(main).
 
 % filters checked states, bij solo is dit niet nodig want minimax fixt dit wel
 filter(Player, State) :-
