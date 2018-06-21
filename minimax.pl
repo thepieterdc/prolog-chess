@@ -1,6 +1,5 @@
 :- module(minimax, []).
 
-:- use_module(draw).
 :- use_module(movement).
 :- use_module(state).
 
@@ -13,7 +12,7 @@ alphabeta(InitialState, MaxDepth, BestState) :-
 
 alphabeta(State, Player, 0, _, _, _, Score) :-
   score(State, Player, Score), !.
-  
+
 alphabeta(Current, Player, Depth, Alpha, Beta, BestNextState, BestScore) :-
   movement:all_moves(Current, NextMoves),
   maplist(state:apply_move(Current), NextMoves, NextStates),

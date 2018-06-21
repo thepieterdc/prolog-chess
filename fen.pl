@@ -77,10 +77,10 @@ pieces([none, none, none, none, none | X], I) --> "5", !,
 pieces([none, none, none, none | X], I) --> "4", !,
   {I1 is I-4, I1 >= 0},
   pieces(X, I1).
-pieces([none, none, none | X], I) --> "3",
+pieces([none, none, none | X], I) --> "3", !,
   {I1 is I-3, I1 >= 0},
   pieces(X, I1).
-pieces([none, none | X], I) --> "2",
+pieces([none, none | X], I) --> "2", !,
   {I1 is I-2, I1 >= 0},
   pieces(X, I1).
 pieces([none | X], I) --> "1", !,

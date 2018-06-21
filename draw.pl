@@ -1,7 +1,5 @@
 :- module(draw, []).
 
-:- use_module(state).
-
 asciiPiece(bishop, black, '\u265D').
 asciiPiece(king, black, '\u265A').
 asciiPiece(knight, black, '\u265E').

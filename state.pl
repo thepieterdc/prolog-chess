@@ -1,6 +1,7 @@
 :- module(state, []).
 
 :- use_module(board).
+:- use_module(movement).
 
 apply_move(Before, move(castling, Castling), After) :-
   board(Before, BeforeBoard),
