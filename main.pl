@@ -34,9 +34,13 @@ profileer(Argv) :-
 
   parse(Argv, State),
 
-  minimax:alphabeta(State, 3, NextState),
+  movement:all_moves(State, Moves),
 
-  write_fen(NextState).
+  write(Moves).
+
+  % minimax:alphabeta(State, 3, NextState),
+
+  % write_fen(NextState).
 
 % regular main
 main(Argv) :-

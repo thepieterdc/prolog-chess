@@ -1,8 +1,8 @@
 :- module(pawn, []).
 
-:- use_module(board).
-:- use_module(movement).
-:- use_module(state).
+:- use_module('../board').
+:- use_module('../movement').
+:- use_module('../state').
 
 % Pawn capture.
 move(State, Square, Turn, move(capture, Square, Destination)) :-

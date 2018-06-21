@@ -1,6 +1,7 @@
 :- module(positions, []).
 
 :- dynamic saved_bishop_moves/2.
+:- dynamic saved_king_moves/2.
 :- dynamic saved_knight_moves/2.
 :- dynamic saved_rook_moves/2.
 
@@ -29,6 +30,24 @@ bishop(R/C, move(R/C, up_right, R1/C1)) :-
   between(1, 8, I),
   R1 is R + I, C1 is C + I,
   between(R, 8, R1), between(C, 8, C1).
+
+king_attacks(From, To) :- king(From, To).
+
+king_moves(R/C, Moves) :-
+  saved_king_moves(R/C, Moves), !.
+
+king_moves(R/C, Moves) :-
+  setof(X, king(R/C, X), Moves),
+  assertz(saved_king_moves(R/C, Moves)).
+
+king(R/C, move(R/C, R1/C1)) :- R < 7, C < 8, R1 is R + 1, C1 is C + 1.
+king(R/C, move(R/C, R1/C)) :- R < 7, R1 is R + 1.
+king(R/C, move(R/C, R1/C1)) :- R < 7, C > 1, R1 is R + 1, C1 is C - 1.
+king(R/C, move(R/C, R/C1)) :- C < 8, C1 is C + 1.
+king(R/C, move(R/C, R/C1)) :- C > 1, C1 is C - 1.
+king(R/C, move(R/C, R1/C1)) :- R > 1, C < 8, R1 is R - 1, C1 is C + 1.
+king(R/C, move(R/C, R1/C)) :- R > 1, R1 is R - 1.
+king(R/C, move(R/C, R1/C1)) :- R > 1, C > 1, R1 is R - 1, C1 is C - 1.
 
 knight_attacks(From, To) :- knight(From, To).
 
