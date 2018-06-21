@@ -20,7 +20,7 @@ capture(State, Turn, move(From, To), PromotionMoves) :-
 % En passant capture, enemysquare is plaats van stuk dat naast mij staat dat ik gepakt heb
 capture(State, Turn, move(SR/SC, DR/DC), move(en_passant, SR/SC, SR/DC, DR/DC)) :-
   state:board(State, Board),
-  state:en_passant(State, SR/DC),
+  state:en_passant(State, DR/DC),
 
   % stuk dat geslagen moet worden staat naast mij.
   board:enemy(Board, SR/DC, Turn),
@@ -49,7 +49,7 @@ moves(State, Square, Turn, [Moves, Captures, EnPassants]) :-
   positions:pawn(Square, Turn, PawnMove),
   convlist(move(Board, Turn), [PawnMove], Moves),
 
-  findall(X, positions:pawn_attacks(Square, Turn, X), PawnCaptures),
+  findall(X, positions:pawn_capture(Square, Turn, X), PawnCaptures),
   convlist(capture(State, Turn), PawnCaptures, Captures),
 
   findall(X, positions:pawn_enpassant(Square, Turn, X), EnPassantMove),

@@ -22,9 +22,9 @@ all_moves(State, Square, Moves) :-
 all_moves(_, _, []).
 
 all_moves(State, Square, piece(bishop, Turn), Moves) :- bishop_moves(State, Square, Turn, Moves), !.
-all_moves(State, Square, piece(king, Turn), Moves) :- king_moves(State, Square, Turn, Moves), !.
 all_moves(State, Square, piece(knight, Turn), Moves) :- knight_moves(State, Square, Turn, Moves), !.
-all_moves(State, Square, piece(pawn, Turn), Moves) :- setof(X, pawn_move(State, Square, Turn, X), Moves), !.
+all_moves(State, Square, piece(king, Turn), Moves) :- king_moves(State, Square, Turn, Moves), !.
+all_moves(State, Square, piece(pawn, Turn), Moves) :- pawn_move(State, Square, Turn, Moves), !.
 all_moves(State, Square, piece(queen, Turn), Moves) :- queen_moves(State, Square, Turn, Moves), !.
 all_moves(State, Square, piece(rook, Turn), Moves) :- rook_moves(State, Square, Turn, Moves), !.
 all_moves(_, _, _, []).
