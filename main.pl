@@ -44,29 +44,29 @@ main(Argv) :-
 
   halt(0).
 
-% % TEST main
-% main(Argv) :-
-%   length(Argv, 7),
-%
-%   % verwijder het test arg uit de input
-%   include(\=('TEST'), Argv, ArgvClean),
-%
-%   parse(ArgvClean, State),
-%
-%   state:turn(State, Player),
-%
-%   movement:all_moves(State, Moves),
-%
-%   maplist(state:apply_move(State), Moves, ResultStates),
-%   length(ResultStates, AmountStates),
-%   % geen geldige moves dus draw
-%   AmountStates > 0,
-%
-%   include(filter(Player), ResultStates, CheckedStates),
-%
-%   maplist(write_fen(), CheckedStates),
-%
-%   halt(0).
+% TEST main
+main(Argv) :-
+  length(Argv, 7),
+
+  % verwijder het test arg uit de input
+  include(\=('TEST'), Argv, ArgvClean),
+
+  parse(ArgvClean, State),
+
+  state:turn(State, Player),
+
+  movement:all_moves(State, Moves),
+
+  maplist(state:apply_move(State), Moves, ResultStates),
+  length(ResultStates, AmountStates),
+  % geen geldige moves dus draw
+  AmountStates > 0,
+
+  include(filter(Player), ResultStates, CheckedStates),
+
+  maplist(write_fen(), CheckedStates),
+
+  halt(0).
 %
 % % when main fails we assume draw.
 % main(Argv) :-

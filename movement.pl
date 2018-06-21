@@ -5,6 +5,7 @@
 :- use_module(king, [move/4 as king_move]).
 :- use_module('movement/knight', [moves/4 as knight_moves]).
 :- use_module(pawn, [move/4 as pawn_move]).
+:- use_module('movement/positions').
 :- use_module('movement/queen', [moves/4 as queen_moves]).
 :- use_module('movement/rook', [moves/4 as rook_moves]).
 :- use_module(state).
@@ -29,17 +30,23 @@ all_moves(State, Square, piece(rook, Turn), Moves) :- rook_moves(State, Square, 
 all_moves(_, _, _, []).
 
 attacking(Board, piece(bishop, _), Current, Target) :-
-  bishop(Current, Turn, Direction, Target),
-  path_clear(Board, Current, Turn, Direction, Target).
+  positions:bishop_attacks(Current, Direction, Target),
+  path_clear(Board, move(Current, Direction, Target)).
+
 attacking(_, piece(king, _), Current, Target) :- king(Current, Target).
-attacking(_, piece(knight, _), Current, Target) :- knight(Current, Target).
+
+attacking(_, piece(knight, _), Current, Target) :-
+  positions:knight_attacks(Current, Target).
+
 attacking(_, piece(pawn, Color), Current, Target) :- pawn_capture(Current, Color, Target).
+
 attacking(Board, piece(queen, _), Current, Target) :-
-  queen(Current, Turn, Direction, Target),
-  path_clear(Board, Current, Turn, Direction, Target).
+  positions:queen_attacks(Current, Direction, Target),
+  path_clear(Board, move(Current, Direction, Target)).
+  
 attacking(Board, piece(rook, _), Current, Target) :-
-  rook(Current, Turn, Direction, Target),
-  path_clear(Board, Current, Turn, Direction, Target).
+  positions:rook_attacks(Current, Direction, Target),
+  path_clear(Board, move(Current, Direction, Target)).
 
 chebyshev_distance(R1/C1, R2/C2, I) :-
   X is abs(C1 - C2),
@@ -86,7 +93,6 @@ path_next(R/C, right, R/C1) :- C1 is C + 1.
 path_next(R/C, up, R1/C) :- R1 is R + 1.
 path_next(R/C, up_left, R1/C1) :- R1 is R + 1, C1 is C - 1.
 path_next(R/C, up_right, R1/C1) :- R1 is R + 1, C1 is C + 1.
-
 
 pawn_capture(From, Color, To) :- position(From, Color, forward_left, To).
 pawn_capture(From, Color, To) :- position(From, Color, forward_right, To).
