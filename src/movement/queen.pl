@@ -4,7 +4,7 @@
 :- use_module('../state').
 :- use_module(positions).
 
-%% move(+Board: board, +Turn: turn, +move:move: +move:move) is semidet
+%% move(+Board: board, +Turn: turn, +move:move: -move:move) is semidet
 %
 %  Formulates a capture move.
 %
@@ -16,7 +16,7 @@ move(Board, Turn, move(From, _, To), move(capture, From, To)) :-
   % Verify the destination square contains an enemy piece.
   board:enemy(Board, To, Turn), !.
 
-%% move(+Board: board, +Turn: turn, +move:move: +move:move) is semidet
+%% move(+Board: board, +Turn: turn, +move:move: -move:move) is semidet
 %
 %  Formulates a regular walking move.
 %

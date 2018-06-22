@@ -3,6 +3,8 @@
 :- use_module(movement).
 :- use_module(state).
 
+% als score gelijk doe random
+
 %start functie
 alphabeta(InitialState, MaxDepth, BestState) :-
   state:turn(InitialState, Player),

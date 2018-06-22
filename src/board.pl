@@ -37,7 +37,8 @@ clear(Before, R/C, After) :-
 
 %% enemy(+Board: board, +Square: square, +turn) is semidet
 %
-%  Validates the given square contains any piece that belongs to the given player's enemy.
+%  Validates the given square contains any piece that belongs to the given
+%  player's enemy.
 %
 %  @param Board the board
 %  @param Square the square to check
@@ -59,14 +60,16 @@ free(Board, R/C) :-
 
 %% mine(+Board: board, +Square: square, +Player: turn) is semidet
 %
-%  Validates the given square contains any piece that belongs to the given player.
+%  Validates the given square contains any piece that belongs to the given
+%  player.
 %
 %  @param Board the board
 %  @param Square the square to check
 %  @param Player the player to match
 mine(Board, Square, Player) :- piece_at(Board, Square, piece(_, Player)).
 
-%% move_piece(+Before: board, +From: square, +To: square, -After: board) is semidet
+%% move_piece(+Before: board, +From: square, +To: square, -After: board) is
+%% semidet
 %
 %  Moves a piece on the board.
 %
