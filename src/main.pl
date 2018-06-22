@@ -76,7 +76,7 @@ main(Argv) :-
   % state for the current player.
   minimax:alphabeta(State, 3, NextState),
   % Re-instantiate the garbage collector.
-  set_prolog_flag(gc, false),
+  set_prolog_flag(gc, false), garbage_collect,
   % Write out the resulting move.
   write_fen(NextState),
   % Halt execution.

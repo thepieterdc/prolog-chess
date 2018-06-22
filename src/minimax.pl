@@ -3,20 +3,25 @@
 :- use_module(movement).
 :- use_module(state).
 
-% als score gelijk doe random
+adjust_depth(Moves, Depth, NewDepth) :-
+  length(Moves, I),
+  I < 5,
+  NewDepth is Depth + 1, !.
+adjust_depth(_, Depth, Depth).
 
 %start functie
 alphabeta(InitialState, MaxDepth, BestState) :-
   state:turn(InitialState, Player),
-  alphabeta(InitialState, Player, MaxDepth, -90 000, +90 000, BestState, _).
+  alphabeta(InitialState, Player, MaxDepth, -999 999 999, +999 999 999, BestState, _).
 
 alphabeta(State, Player, 0, _, _, _, Score) :-
   score(State, Player, Score), !.
 
 alphabeta(Current, Player, Depth, Alpha, Beta, BestNextState, BestScore) :-
   movement:all_moves(Current, NextMoves),
+  adjust_depth(NextMoves, Depth, NewDepth),
   maplist(state:apply_move(Current), NextMoves, NextStates),
-  best(NextStates, Player, Depth, Alpha, Beta, BestNextState, BestScore), !.
+  best(NextStates, Player, NewDepth, Alpha, Beta, BestNextState, BestScore), !.
 
 % geen moves meer
 alphabeta(State, Player, _, _, _, _, Score) :-
@@ -26,6 +31,10 @@ best([State1 | States], Player, Depth, Alpha, Beta, BestState, BestScore) :-
   Deeper is Depth - 1,
   alphabeta(State1, Player, Deeper, Alpha, Beta, _, Score1),
   evaluate(State1, Score1, States, Player, Depth, Alpha, Beta, BestState, BestScore).
+
+% equal scores
+better_of(State1, Score, _, Score, _, State1, Score) :- random(0, 2, 0), !.
+better_of(_, Score, State2, Score, _, State2, Score).
 
 % my turn -> maximize
 better_of(State1, Score1, _, Score2, Player, State1, Score1) :-
@@ -57,14 +66,12 @@ evaluate(State, Score, States, Player, Depth, Alpha, Beta, BestState, BestScore)
   best(States, Player, Depth, NewAlpha, NewBeta, State1, Score1),
   better_of(State, Score, State1, Score1, Player, BestState, BestScore).
 
-% als king dood is cut
-
-piece_score(bishop, 3).
-piece_score(king, 1000).
-piece_score(knight, 3).
-piece_score(pawn, 1).
-piece_score(queen, 9).
-piece_score(rook, 5).
+piece_score(bishop, 3 000).
+piece_score(king, 1 000 000).
+piece_score(knight, 12 000).
+piece_score(pawn, 1 000).
+piece_score(queen, 25 000).
+piece_score(rook, 5 000).
 
 score(State, Player, Score) :-
   state:enemy(Player, Enemy),
