@@ -2,7 +2,7 @@
 
 :- use_module(library(dcg/basics)).
 
-%% parse(FenString:string, State:state) is semidet
+%% parse(FenString:string, State:state).
 %
 %  Parses a given FEN string into a state. Can also perform the reverse
 %  conversion operation.

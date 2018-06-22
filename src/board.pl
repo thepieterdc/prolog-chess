@@ -9,7 +9,7 @@ castling_squares(castling(kingside, white), 1/5, 1/8, 1/7, 1/6).
 castling_squares(castling(queenside, black), 8/5, 8/1, 8/3, 8/6).
 castling_squares(castling(queenside, white), 1/5, 1/1, 1/3, 1/4).
 
-%% check(+Board: board, +Player: turn) is semidet
+%% check(+Board: board, +Player: turn).
 %
 %  Validates the given player is in check.
 %
@@ -23,7 +23,7 @@ check(Board, Player) :-
   % Verify that the enemy is attacking the king of the given player.
   state:attacking(Board, Enemy, KingSquare), !.
 
-%% clear(+Board: board, +R/C: square, -After: board) is semidet
+%% clear(+Board: board, +R/C: square, -After: board).
 %
 %  Removes a piece from the board.
 %
@@ -35,7 +35,7 @@ clear(Before, R/C, After) :-
   piece_replace(RowBefore, C, none, RowAfter),
   row_replace(Before, R, RowAfter, After).
 
-%% enemy(+Board: board, +Square: square, +turn) is semidet
+%% enemy(+Board: board, +Square: square, +turn).
 %
 %  Validates the given square contains any piece that belongs to the given
 %  player's enemy.
@@ -46,7 +46,7 @@ clear(Before, R/C, After) :-
 enemy(Board, Square, black) :- piece_at(Board, Square, piece(_, white)).
 enemy(Board, Square, white) :- piece_at(Board, Square, piece(_, black)).
 
-%% free(+Board: board, +R/C: square) is semidet
+%% free(+Board: board, +R/C: square).
 %
 %  Succeeds if the given square does not contain any piece.
 %
@@ -58,7 +58,7 @@ free(Board, R/C) :-
   % Verify the piece at the given square is none.
   nth1_piece(Row, C, none).
 
-%% mine(+Board: board, +Square: square, +Player: turn) is semidet
+%% mine(+Board: board, +Square: square, +Player: turn).
 %
 %  Validates the given square contains any piece that belongs to the given
 %  player.
@@ -68,8 +68,7 @@ free(Board, R/C) :-
 %  @param Player the player to match
 mine(Board, Square, Player) :- piece_at(Board, Square, piece(_, Player)).
 
-%% move_piece(+Before: board, +From: square, +To: square, -After: board) is
-%% semidet
+%% move_piece(+Before: board, +From: square, +To: square, -After: board).
 %
 %  Moves a piece on the board.
 %
@@ -85,7 +84,7 @@ move_piece(Before, From, To, After) :-
   % Put the piece at the destination square.
   set_piece(Removed, To, Piece, After).
 
-%% nth1_piece(+board:board, +integer, +R: -R: row) is det
+%% nth1_piece(+board:board, +integer, +R: -R: row).
 %
 %  Gets the row at the given row number on the board.
 %
@@ -101,7 +100,7 @@ nth1_row(board(_, _, _, _, _, R, _, _), 6, R).
 nth1_row(board(_, _, _, _, _, _, R, _), 7, R).
 nth1_row(board(_, _, _, _, _, _, _, R), 8, R).
 
-%% nth1_piece(+row:row, +integer, +R: -P: piece) is det
+%% nth1_piece(+row:row, +integer, +R: -P: piece).
 %
 %  Gets the piece at the given column in the row.
 %
@@ -117,7 +116,7 @@ nth1_piece(row(_, _, _, _, _, P, _, _), 6, P).
 nth1_piece(row(_, _, _, _, _, _, P, _), 7, P).
 nth1_piece(row(_, _, _, _, _, _, _, P), 8, P).
 
-%% piece_at(+Board:board, +R/C: square, -Piece: piece) is semidet
+%% piece_at(+Board:board, +R/C: square, -Piece: piece).
 %
 %  Gets the piece at a given square;
 %
@@ -130,7 +129,7 @@ piece_at(Board, R/C, Piece) :-
   % Extract the column of the piece from the row.
   nth1_piece(Row, C, Piece).
 
-%% piece_replace(+row:row, +integer, +P: Piece, -row:row) is semidet
+%% piece_replace(+row:row, +integer, +P: Piece, -row:row).
 %
 %  Replaces a piece in a row.
 %
@@ -147,7 +146,7 @@ piece_replace(row(P1, P2, P3, P4, P5, _, P7, P8), 6, P, row(P1, P2, P3, P4, P5, 
 piece_replace(row(P1, P2, P3, P4, P5, P6, _, P8), 7, P, row(P1, P2, P3, P4, P5, P6, P, P8)).
 piece_replace(row(P1, P2, P3, P4, P5, P6, P7, _), 8, P, row(P1, P2, P3, P4, P5, P6, P7, P)).
 
-%% row_replace(+board:board, +integer, +R: row, -board:board) is semidet
+%% row_replace(+board:board, +integer, +R: row, -board:board).
 %
 %  Replaces a row on the board.
 %
@@ -164,7 +163,7 @@ row_replace(board(R1, R2, R3, R4, R5, _, R7, R8), 6, R, board(R1, R2, R3, R4, R5
 row_replace(board(R1, R2, R3, R4, R5, R6, _, R8), 7, R, board(R1, R2, R3, R4, R5, R6, R, R8)).
 row_replace(board(R1, R2, R3, R4, R5, R6, R7, _), 8, R, board(R1, R2, R3, R4, R5, R6, R7, R)).
 
-%% set_piece(+Before:board, +R/C: square, +Piece:piece, -After:board) is semidet
+%% set_piece(+Before:board, +R/C: square, +Piece:piece, -After:board).
 %
 %  Sets the given piece on the board at square R/C.
 %
@@ -180,7 +179,7 @@ set_piece(Before, R/C, Piece, After) :-
   % Put the modified row in the resulting board.
   row_replace(Before, R, RowAfter, After).
 
-%% square(R/C) is nondet
+%% square(R/C).
 %
 %  Validates or generates a square on the playfield.
 %

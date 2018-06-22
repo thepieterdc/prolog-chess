@@ -4,7 +4,7 @@
 :- use_module('../movement').
 :- use_module('../state').
 
-%% move(+State: state, +Turn: turn, +move:move: -move:move) is semidet
+%% move(+State: state, +Turn: turn, +move:move: -move:move).
 %
 %  Formulates a capture move.
 %
@@ -20,8 +20,7 @@ capture(State, Turn, move(From, To), move(capture, From, To)) :-
   % Verify the destination square contains an enemy piece.
   board:enemy(Board, To, Turn).
 
-%% move(+State: state, +Turn: turn, +move: move, -PromotionMoves: list) is
-%% semidet
+%% move(+State: state, +Turn: turn, +move: move, -PromotionMoves: list).
 %
 %  Formulates a promotion-capture move.
 %
@@ -39,7 +38,7 @@ capture(State, Turn, move(From, To), PromotionMoves) :-
   % Get all possible promotions.
   bagof(Move, promotion_move(Move, From, To), PromotionMoves).
 
-%% move(+State: state, +Turn: turn, +move: move, -move: move) is semidet
+%% move(+State: state, +Turn: turn, +move: move, -move: move).
 %
 %  Formulates an en-pasant capture move.
 %
@@ -57,7 +56,7 @@ capture(S, Turn, move(SR/SC, DR/DC), move(en_passant, SR/SC, SR/DC, DR/DC)) :-
   % Verify the destination square does not contain any piece.
   board:free(Board, DR/DC).
 
-%% move(+Board: board, +Turn: turn, +move: move, -move: move) is semidet
+%% move(+Board: board, +Turn: turn, +move: move, -move: move).
 %
 %  Formulates a pawn double walking move, for initial positions.
 %
@@ -71,8 +70,7 @@ move(Board, _, move(From, EP, To), move(move, From, EP, To)) :-
   % Verify the destination square does not contain any piece.
   board:free(Board, To).
 
-%% move(+Board: board, +Turn: turn, +move: move, PromotionMoves: list) is
-%% semidet
+%% move(+Board: board, +Turn: turn, +move: move, PromotionMoves: list).
 %
 %  Formulates a promotion move.
 %
@@ -88,7 +86,7 @@ move(Board, _, move(From, To), PromotionMoves) :-
   % Get all possible promotions.
   bagof(Move, promotion_move(Move, From, To), PromotionMoves).
 
-%% move(+Board: board, +Turn: turn, +move: move, -move: move) is semidet
+%% move(+Board: board, +Turn: turn, +move: move, -move: move).
 %
 %  Formulates a pawn double walking move, for initial positions.
 %
@@ -102,7 +100,7 @@ move(Board, _, move(From, To), move(move, From, To)) :-
   % Verify the destination square does not contain any piece.
   board:free(Board, To).
 
-%% moves(+State: state, +Square: square, +Turn: turn, -list) is semidet
+%% moves(+State: state, +Square: square, +Turn: turn, -list).
 %
 %  Finds all valid moves for a pawn on the given Square.
 %

@@ -4,7 +4,7 @@
 :- use_module('../movement').
 :- use_module('../state').
 
-%% castle(+State: state, +Square:, +Turn: turn, +move:move) is semidet
+%% castle(+State: state, +Square:, +Turn: turn, +move:move).
 %
 %  Formulates a castling move (kingside).
 %
@@ -24,7 +24,7 @@ castle(State, Square, Turn, move(castling, castling(kingside, Turn))) :-
   % Verify there is no piece between the king and the rook.
   movement:path_clear(Board, move(Square, left, RookSquare)).
 
-%% castle(+State: state, +Square:, +Turn: turn, +move:move) is semidet
+%% castle(+State: state, +Square:, +Turn: turn, +move:move).
 %
 %  Formulates a castling move (queenside).
 %
@@ -44,7 +44,7 @@ castle(State, Square, Turn, move(castling, castling(queenside, Turn))) :-
   % Verify there is no piece between the king and the rook.
   movement:path_clear(Board, move(Square, left, RookSquare)).
 
-%% move(+Board: board, +Turn: turn, +move:move: -move:move) is semidet
+%% move(+Board: board, +Turn: turn, +move:move: -move:move).
 %
 %  Formulates a capture move.
 %
@@ -56,7 +56,7 @@ move(Board, Turn, move(From, To), move(capture, From, To)) :-
   % Verify the destination square contains an enemy piece.
   board:enemy(Board, To, Turn), !.
 
-%% move(+Board: board, +Turn: turn, +move:move: -move:move) is semidet
+%% move(+Board: board, +Turn: turn, +move:move: -move:move).
 %
 %  Formulates a regular walking move.
 %
@@ -68,7 +68,7 @@ move(Board, _, move(From, To), move(move, From, To)) :-
   % Verify the destination square does not contain any piece.
   board:free(Board, To).
 
-%% moves(+State: state, +Square: square, +Turn: turn, -list) is semidet
+%% moves(+State: state, +Square: square, +Turn: turn, -list).
 %
 %  Finds all valid moves for a knight on the given Square.
 %

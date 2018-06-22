@@ -12,7 +12,7 @@
 % Set the initialization goal.
 :- initialization(main, main).
 
-%% parse(+Argv:list, -State:state) is semidet
+%% parse(+Argv:list, -State:state).
 %
 %  Parses the given FEN input arguments into a state.
 %
@@ -26,7 +26,7 @@ parse(Argv, State) :-
   % Parse the FEN string into a state.
   fen:parse(FenString, State).
 
-%% validate(+Player:turn, +State:state) is det
+%% validate(+Player:turn, +State:state).
 %
 %  Validates a given state. A state is valid if the given player is not in
 %  check.
@@ -37,7 +37,7 @@ validate(Player, State) :-
   % Validate the player is not in check.
   \+ state:check(State, Player).
 
-%% write_draw() is det
+%% write_draw().
 %
 %  Writes out the "DRAW" message.
 write_draw() :-
@@ -46,7 +46,7 @@ write_draw() :-
   % Print the string.
   write(Draw), nl.
 
-%% write_fen(+State:state) is det
+%% write_fen(+State:state).
 %
 %  Writes out a given state in FEN notation.
 %
@@ -59,7 +59,7 @@ write_fen(State) :-
   % Write out the result.
   write(ResultRaw), nl.
 
-%% main(+Argv:list) is semidet
+%% main(+Argv:list).
 %
 %  Regular main function that prints out the best move. This function will, if
 %  successful, halt the program.
@@ -82,7 +82,7 @@ main(Argv) :-
   % Halt execution.
   halt(0).
 
-%% main(+Argv:list) is semidet
+%% main(+Argv:list).
 %
 %  Testing main function that prints out all next moves. This function will, if
 %  successful, halt the program.
@@ -110,7 +110,7 @@ main(Argv) :-
   % Halt execution.
   halt(0).
 
-%% main(+Argv:list) is semidet
+%% main(+Argv:list).
 %
 %  Main function that prints out a draw. A draw is assumed if the regular and
 %  testing main functions have not found any valid moves.
