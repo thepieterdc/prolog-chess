@@ -22,7 +22,7 @@ castle(State, Square, Turn, move(castling, castling(kingside, Turn))) :-
   % Verify this castling type may be executed.
   member(castling(kingside, Turn), Castlings),
   % Verify there is no piece between the king and the rook.
-  movement:path_clear(Board, move(Square, left, RookSquare)).
+  movement:path_clear(Board, move(Square, right, RookSquare)).
 
 %% castle(+State: state, +Square:, +Turn: turn, +move:move).
 %

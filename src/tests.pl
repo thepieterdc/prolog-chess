@@ -22,6 +22,24 @@ fen(Name, State) :-
   fen:parse(Fen, State).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Bishop tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- begin_tests(bishop).
+
+% Lower-left to upper-right diagonal movement
+test(bishop_leftdown_rightup, [forall((
+    between(1, 8, R),
+    between(1, 8, C)
+  ))]) :-
+    findall(Col, positions:rook(R/C, move(R/C, left, R/Col)), LeftMoves),
+    findall(Col, positions:rook(R/C, move(R/C, right, R/Col)), RightMoves),
+    append(LeftMoves, RightMoves, HorizontalMoves),
+    exclude(=(R/C), HorizontalMoves, FilteredMoves),
+    length(FilteredMoves, 7).
+
+:- end_tests(bishop).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Rook tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- begin_tests(rook).
