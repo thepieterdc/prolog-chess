@@ -40,7 +40,7 @@ filter_col(Col, move(_, _, _/Col)).
 
 filter_row(Row, move(_, _, Row/_)).
 
-filter_same_offset(move(R/C, _, R1/C1)) :-
+filter_same_offset(move(move, R/C, R1/C1)) :-
   between(1, 8, I), I is abs(R1 - R), I is abs(C1 - C).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,7 +52,11 @@ test(bishop, [forall((
     between(1, 8, C),
     between(1, 8, R)
   ))]) :-
-    positions:bishop_moves(R/C, DiagonalMoves),
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(bishop, Color), AfterBoard),
+    state:update_board(State, AfterBoard, BishopState),
+    movement:all_moves(BishopState, DiagonalMoves),
     length(DiagonalMoves, AmtDiagonalMoves),
     include(filter_same_offset(), DiagonalMoves, FilteredMoves),
     length(FilteredMoves, AmtDiagonalMoves).
@@ -103,9 +107,175 @@ test(king_movement, [forall((
     length(KingMoves, KingMovesAmt),
     include(filter_chebyshev_distance(1), KingMoves, FilteredMoves),
     length(FilteredMoves, KingMovesAmt),
-    \+ KingMovesAmt is 0, !.
+    KingMovesAmt > 0, !.
 
 :- end_tests(king).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Knight tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- begin_tests(knight).
+
+test(knight_capture, [forall((
+    between(3, 6, C),
+    between(3, 6, R),
+    member(R0/C0, [1/2, 2/1]),
+    member(ROOffset, [-1, 1]),
+    member(COOffset, [-1, 1]),
+    member(PieceType, [bishop, king, knight, pawn, queen, rook]),
+    member(Color, [black, white])
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    RO_Offset is R0 * ROOffset, CO_Offset is C0 * COOffset,
+    R1 is RO_Offset + R, C1 is CO_Offset + C,
+    board:set_piece(PreBoard, R1/C1, piece(knight, Color), AfterBoard),
+    state:enemy(Color, Enemy),
+    board:set_piece(AfterBoard, R/C, piece(PieceType, Enemy), EnemyBoard),
+    state:update_board(State, EnemyBoard, KnightState),
+    movement:all_moves(KnightState, KnightMoves),
+    member(move(capture, R1/C1, R/C), KnightMoves), !.
+
+test(knight_movement, [forall((
+    between(3, 6, C),
+    between(3, 6, R),
+    member(R0/C0, [1/2, 2/1]),
+    member(ROOffset, [-1, 1]),
+    member(COOffset, [-1, 1]),
+    member(Color, [black, white])
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    RO_Offset is R0 * ROOffset, CO_Offset is C0 * COOffset,
+    R1 is RO_Offset + R, C1 is CO_Offset + C,
+    board:set_piece(PreBoard, R1/C1, piece(knight, Color), AfterBoard),
+    state:update_board(State, AfterBoard, KnightState),
+    movement:all_moves(KnightState, KnightMoves),
+    member(move(move, R1/C1, R/C), KnightMoves), !.
+
+:- end_tests(knight).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Pawn tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- begin_tests(pawn).
+
+test(pawn_black_double_movement, [forall((
+    between(1, 8, C)
+  ))]) :-
+    fen(empty, black, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, 7/C, piece(pawn, black), AfterBoard),
+    state:update_board(State, AfterBoard, PawnState),
+    movement:all_moves(PawnState, PawnMoves),
+    length(PawnMoves, 2).
+
+test(pawn_white_double_movement, [forall((
+    between(1, 8, C)
+  ))]) :-
+    fen(empty, white, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, 2/C, piece(pawn, white), AfterBoard),
+    state:update_board(State, AfterBoard, PawnState),
+    movement:all_moves(PawnState, PawnMoves),
+    length(PawnMoves, 2).
+
+test(pawn_black_capture, [forall((
+    between(1, 8, C),
+    between(3, 8, R),
+    member(EnemyPiece, [bishop, king, knight, pawn, queen, rook])
+  ))]) :-
+    fen(empty, black, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(pawn, black), AfterBoard),
+    R1 is R - 1,
+    (C1 is C - 1, C > 1; C1 is C + 1, C < 8),
+    board:set_piece(AfterBoard, R1/C1, piece(EnemyPiece, white), EnemyBoard),
+    state:update_board(State, EnemyBoard, PawnState),
+    movement:all_moves(PawnState, PawnMoves),
+    include(=(move(capture,_,_)), PawnMoves, Captures),
+    length(Captures, AmtCaptures),
+    AmtCaptures > 0, !.
+
+test(pawn_white_capture, [forall((
+    between(1, 8, C),
+    between(1, 6, R),
+    member(EnemyPiece, [bishop, king, knight, pawn, queen, rook])
+  ))]) :-
+    fen(empty, white, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(pawn, white), AfterBoard),
+    R1 is R + 1,
+    (C1 is C - 1, C > 1; C1 is C + 1, C < 8),
+    board:set_piece(AfterBoard, R1/C1, piece(EnemyPiece, black), EnemyBoard),
+    state:update_board(State, EnemyBoard, PawnState),
+    movement:all_moves(PawnState, PawnMoves),
+    include(=(move(capture,_,_)), PawnMoves, Captures),
+    length(Captures, AmtCaptures),
+    AmtCaptures > 0, !.
+
+test(pawn_regular_movement, [forall((
+    between(1, 8, C),
+    member(R, [3, 4, 5, 6]),
+    member(Color, [black, white])
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(pawn, Color), AfterBoard),
+    state:update_board(State, AfterBoard, PawnState),
+    movement:all_moves(PawnState, PawnMoves),
+    length(PawnMoves, 1).
+
+:- end_tests(pawn).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Queen tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- begin_tests(queen).
+
+test(queen_diagonal, [forall((
+    between(1, 8, C),
+    between(1, 8, R)
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(queen, Color), AfterBoard),
+    state:update_board(State, AfterBoard, QueenState),
+    movement:all_moves(QueenState, DiagonalMoves),
+    include(filter_same_offset(), DiagonalMoves, FilteredMoves),
+    length(FilteredMoves, AmtMoves),
+    AmtMoves > 0.
+
+% Horizontal movement
+test(queen_horizontal, [forall((
+    between(1, 8, C),
+    between(1, 8, R),
+    member(Color, [black, white])
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(queen, Color), AfterBoard),
+    state:update_board(State, AfterBoard, QueenState),
+    movement:all_moves(QueenState, Moves),
+    include(filter_row(R), Moves, HorizontalMoves),
+    \+ member(move(_, _, R/C), HorizontalMoves),
+    length(HorizontalMoves, 7).
+
+% Vertical movement
+test(queen_vertical, [forall((
+    between(1, 8, C),
+    between(1, 8, R)
+  ))]) :-
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(queen, Color), AfterBoard),
+    state:update_board(State, AfterBoard, QueenState),
+    movement:all_moves(QueenState, Moves),
+    include(filter_col(C), Moves, VerticalMoves),
+    \+ member(move(_, _, R/C), VerticalMoves),
+    length(VerticalMoves, 7).
+
+:- end_tests(queen).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Rook tests
@@ -132,17 +302,16 @@ test(rook_vertical, [forall((
     between(1, 8, C),
     between(1, 8, R)
   ))]) :-
-    positions:rook_moves(R/C, Moves),
+    fen(empty, Color, State), !,
+    state:board(State, PreBoard),
+    board:set_piece(PreBoard, R/C, piece(rook, Color), AfterBoard),
+    state:update_board(State, AfterBoard, RookState),
+    movement:all_moves(RookState, Moves),
     include(filter_col(C), Moves, VerticalMoves),
     \+ member(move(_, _, R/C), VerticalMoves),
     length(VerticalMoves, 7).
 
 :- end_tests(rook).
-
-% docs[minimax, movement, state]
-% knight tests
-% queen tests
-% pawn tests
 
 main :-
   show_coverage(run_tests),
