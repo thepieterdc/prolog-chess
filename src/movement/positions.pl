@@ -89,7 +89,6 @@ king_moves(R/C, Moves) :-
   % Store the moves in the cache.
   assertz(saved_king_moves(R/C, Moves)).
 
-
 %% king(+R/C: square, -move: move).
 %
 %  Generates a king move.
@@ -180,7 +179,6 @@ pawn_capture(R/C, white, move(R/C, R1/C1)) :-
 pawn_enpassant(7/C, black, move(7/C, 6/C, 5/C)) :- between(1, 8, C).
 pawn_enpassant(2/C, white, move(2/C, 3/C, 4/C)) :- between(1, 8 ,C).
 
-
 %% pawn(+R/C: square, +Turn: turn, -move: move).
 %
 %  Generates a pawn move.
@@ -249,7 +247,6 @@ rook_moves(R/C, Moves) :-
   setof(X, rook(R/C, X), Moves),
   % Store the moves in the cache for future use.
   assertz(saved_rook_moves(R/C, Moves)).
-
 
 %% rook(+R/C: square, -move: move).
 %

@@ -177,7 +177,7 @@ set_piece(Before, R/C, Piece, After) :-
   % Put the piece on the correct row.
   piece_replace(RowBefore, C, Piece, RowAfter),
   % Put the modified row in the resulting board.
-  row_replace(Before, R, RowAfter, After).
+  row_replace(Before, R, RowAfter, After), !.
 
 %% square(R/C).
 %

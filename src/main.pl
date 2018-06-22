@@ -102,7 +102,7 @@ main(Argv) :-
   % Apply all possible moves to obtain the resulting states.
   maplist(state:apply_move(State), Moves, ResultStates),
   % Remove the states where the player is in check.
-  include(filter(Player), ResultStates, ValidStates),
+  include(validate(Player), ResultStates, ValidStates),
   % Verify at least one legal move is available.
   length(ValidStates, AmountStates), AmountStates > 0,
   % Write the FEN representation for every valid state.
