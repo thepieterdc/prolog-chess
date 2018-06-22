@@ -196,7 +196,8 @@ turn(state(_, Turn, _, _, _, _), Turn).
 
 update_board(state(_, T, C, EP, HC, FC), Board, state(Board, T, C, EP, HC, FC)).
 
-update_castling(state(B, T, C, EP, HC, FC), state(B, T, C1, EP, HC, FC)) :- include(can_castle(B), C, C1).
+update_castling(state(B, T, C, EP, HC, FC), state(B, T, C1, EP, HC, FC)) :-
+  include(can_castle(B), C, C1).
 
 update_enpassant(state(B, T, C, _, HC, FC), EP, state(B, T, C, EP, HC, FC)).
 
