@@ -3,10 +3,6 @@
 :- use_module(movement).
 :- use_module(state).
 
-%https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
-
-% test of diepte dynamisch kan
-
 %start functie
 alphabeta(InitialState, MaxDepth, BestState) :-
   state:turn(InitialState, Player),

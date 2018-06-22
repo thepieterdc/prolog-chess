@@ -2,7 +2,15 @@
 
 :- use_module(library(dcg/basics)).
 
+%% parse(FenString:string, State:state) is semidet
+%
+%  Parses a given FEN string into a state. Can also perform the reverse
+%  conversion operation.
+%
+%  @param FenString the FEN string
+%  @param State the corresponding state
 parse(FenString, State) :-
+  % Apply the DCG to the string to obtain the state, or reverse.
   phrase(state(State), FenString).
 
 state(state(Board, Turn, Castling, EnPassant, HalfCount, FullCount)) -->
