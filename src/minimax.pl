@@ -5,7 +5,7 @@
 
 adjust_depth(Moves, Depth, NewDepth) :-
   length(Moves, I),
-  I < 5,
+  I < 3,
   NewDepth is Depth + 1, !.
 adjust_depth(_, Depth, Depth).
 
@@ -33,7 +33,7 @@ best([State1 | States], Player, Depth, Alpha, Beta, BestState, BestScore) :-
   evaluate(State1, Score1, States, Player, Depth, Alpha, Beta, BestState, BestScore).
 
 % equal scores
-better_of(State1, Score, _, Score, _, State1, Score) :- random(0, 2, 0), !.
+better_of(State1, Score, _, Score, _, State1, Score) :- random(0, 2, 1), !.
 better_of(_, Score, State2, Score, _, State2, Score).
 
 % my turn -> maximize
