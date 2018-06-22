@@ -201,5 +201,6 @@ update_castling(state(B, T, C, EP, HC, FC), state(B, T, C1, EP, HC, FC)) :-
 
 update_enpassant(state(B, T, C, _, HC, FC), EP, state(B, T, C, EP, HC, FC)).
 
+update_turn(state(B, _, C, EP, HC, FC), Turn, state(B, Turn, C, EP, HC, FC)).
 update_turn(state(B, white, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
 update_turn(state(B, black, C, EP, HC, FC), state(B, white, C, EP, HC, FC)).

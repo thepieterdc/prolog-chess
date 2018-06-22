@@ -8,7 +8,7 @@
 %start functie
 alphabeta(InitialState, MaxDepth, BestState) :-
   state:turn(InitialState, Player),
-  alphabeta(InitialState, Player, MaxDepth, -90000, +90000, BestState, _).
+  alphabeta(InitialState, Player, MaxDepth, -90 000, +90 000, BestState, _).
 
 alphabeta(State, Player, 0, _, _, _, Score) :-
   score(State, Player, Score), !.
