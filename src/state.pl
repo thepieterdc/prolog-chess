@@ -233,9 +233,18 @@ attacking_squares(Board, Player, Attacked) :-
 %  @param Board the board
 board(state(Board, _, _, _, _, _), Board).
 
+%% can_castle(+Board: board, +Type: castling).
+%
+%  Validates a given castling right.
+%
+%  @param Board the board
+%  @param Type the castling right to validate
 can_castle(Board, castling(Type, Color)) :-
+  % Get the king and rook squares.
   board:castling_squares(castling(Type, Color), KingFrom, RookFrom, _, _),
+  % Validate the king is at the correct position.
   board:piece_at(Board, KingFrom, piece(king, Color)),
+  % Validate the rook is at the correct position.
   board:piece_at(Board, RookFrom, piece(rook, Color)).
 
 %% castling(+State: state, -C: list).
@@ -246,10 +255,19 @@ can_castle(Board, castling(Type, Color)) :-
 %  @param C the castling rights
 castling(state(_, _, C, _, _, _), C).
 
+%% check(+State: state, +Player: turn).
+%
+%  Validates the given player is in check.
+%
+%  @param State the state
+%  @param Player the player
 check(State, Player) :-
+  % Extract the board from the state.
   board(State, Board),
+  % Validate the in-check status.
   board:check(Board, Player).
 
+% Enemies of the given players.
 enemy(black, white).
 enemy(white, black).
 
@@ -269,8 +287,14 @@ en_passant(state(_, _, _, EP, _, _), EP).
 %  @param FC the full move counter
 full_count(state(_, _, _, _, _, FC), FC).
 
-% white is the next player -> black played in this move
+%% inc_fullcount(+State1: state, -State2: state).
+%
+%  Increments the full-move counter
+%
+%  @param State1 the initial state
+%  @param State2 the updated state
 inc_fullcount(state(B, white, C, EP, HC, FC), state(B, white, C, EP, HC, FC1)) :-
+  % The counter should be incremented since black has moved.
   succ(FC, FC1).
 inc_fullcount(state(B, black, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
 
@@ -282,16 +306,55 @@ inc_fullcount(state(B, black, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
 %  @param HC the half move counter
 half_count(state(_, _, _, _, HC, _), HC).
 
+%% inc_halfcount(+State1: state, -State2: state).
+%
+%  Increments the half-move counter
+%
+%  @param State1 the initial state
+%  @param State2 the updated state
 inc_halfcount(state(B, T, C, EP, HC, FC), state(B, T, C, EP, HC1, FC)) :-
+  % Increment the half-move counter.
   succ(HC, HC1).
+
+%% inc_fullcount(+State1: state, +Piece: piece, -State2: state).
+%
+%  Increments the half-move counter based on the piece.
+%
+%  @param State1 the initial state
+%  @param Piece the piece
+%  @param State2 the updated state
 inc_halfcount(state(B, T, C, EP, _, FC), piece(pawn, _), state(B, T, C, EP, 0, FC)) :- !.
 inc_halfcount(state(B, T, C, EP, HC, FC), _, state(B, T, C, EP, HC1, FC)) :-
-  succ(HC, HC1), HC1 < 75. %remise
+  % Draw condition.
+  succ(HC, HC1), HC1 < 75.
 
-piece_at(State, Square, Piece) :- board(State, Board), board:piece_at(Board, Square, Piece).
+%% piece_at(+State: state, +Square: square, -Piece: piece).
+%
+%  Get the piece at the given square.
+%
+%  @param State the state
+%  @param Square the square
+%  @param Piece the piece at the given square
+piece_at(State, Square, Piece) :-
+  % Extract the board from the state.
+  board(State, Board),
+  % Get the piece at the square.
+  board:piece_at(Board, Square, Piece).
 
+%% reset_enpassant(+State1: state, -State2: state).
+%
+%  Resets the en-passant square.
+%
+%  @param State1 the initial state
+%  @param State2 the updated state
 reset_enpassant(state(B, T, C, _, HC, FC), state(B, T, C, none, HC, FC)).
 
+%% reset_halfcount(+State1: state, -State2: state).
+%
+%  Resets the half-move counter.
+%
+%  @param State1 the initial state
+%  @param State2 the updated state
 reset_halfcount(state(B, T, C, EP, _, FC), state(B, T, C, EP, 0, FC)).
 
 %% turn(+State: state, -Turn: turn).
@@ -302,13 +365,41 @@ reset_halfcount(state(B, T, C, EP, _, FC), state(B, T, C, EP, 0, FC)).
 %  @param Turn the turn
 turn(state(_, Turn, _, _, _, _), Turn).
 
+%% update_board(+State1: state, +Board: board, -State2: state).
+%
+%  Updates the board in the state.
+%
+%  @param State1 the initial state
+%  @param Board the board to replace
+%  @param State2 the updated state
 update_board(state(_, T, C, EP, HC, FC), Board, state(Board, T, C, EP, HC, FC)).
 
+%% update_castling(+State1: state, -State2: state).
+%
+%  Updates the castling rights in the state.
+%
+%  @param State1 the initial state
+%  @param State2 the updated state
 update_castling(state(B, T, C, EP, HC, FC), state(B, T, C1, EP, HC, FC)) :-
+  % Include all valid rights.
   include(can_castle(B), C, C1).
 
+%% update_enpassant(+State1: state, +EP: square, -State2: state).
+%
+%  Updates the en-passant square in the state.
+%
+%  @param State1 the initial state
+%  @param EP the en-passant square
+%  @param State2 the updated state
 update_enpassant(state(B, T, C, _, HC, FC), EP, state(B, T, C, EP, HC, FC)).
 
+%% update_turn(+State1: state, +Turn: turn, -State2: state).
+%
+%  Updates the turn in the state.
+%
+%  @param State1 the initial state
+%  @param Turn the turn to replace
+%  @param State2 the updated state
 update_turn(state(B, _, C, EP, HC, FC), Turn, state(B, Turn, C, EP, HC, FC)).
 update_turn(state(B, white, C, EP, HC, FC), state(B, black, C, EP, HC, FC)).
 update_turn(state(B, black, C, EP, HC, FC), state(B, white, C, EP, HC, FC)).
