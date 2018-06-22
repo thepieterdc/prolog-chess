@@ -21,21 +21,26 @@ fen(Name, State) :-
   fens(Name, Fen),
   fen:parse(Fen, State).
 
+filter_col(Col, move(_, _, _/Col)).
+
+filter_row(Row, move(_, _, Row/_)).
+
+filter_same_offset(move(R/C, _, R1/C1)) :-
+  between(1, 8, I), I is abs(R1 - R), I is abs(C1 - C).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Bishop tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- begin_tests(bishop).
 
-% Lower-left to upper-right diagonal movement
-test(bishop_leftdown_rightup, [forall((
-    between(1, 8, R),
-    between(1, 8, C)
+test(bishop, [forall((
+    between(1, 8, C),
+    between(1, 8, R)
   ))]) :-
-    findall(Col, positions:rook(R/C, move(R/C, left, R/Col)), LeftMoves),
-    findall(Col, positions:rook(R/C, move(R/C, right, R/Col)), RightMoves),
-    append(LeftMoves, RightMoves, HorizontalMoves),
-    exclude(=(R/C), HorizontalMoves, FilteredMoves),
-    length(FilteredMoves, 7).
+    positions:bishop_moves(R/C, DiagonalMoves),
+    length(DiagonalMoves, AmtDiagonalMoves),
+    include(filter_same_offset(), DiagonalMoves, FilteredMoves),
+    length(FilteredMoves, AmtDiagonalMoves).
 
 :- end_tests(bishop).
 
@@ -46,31 +51,27 @@ test(bishop_leftdown_rightup, [forall((
 
 % Horizontal movement
 test(rook_horizontal, [forall((
-    between(1, 8, R),
-    between(1, 8, C)
+    between(1, 8, C),
+    between(1, 8, R)
   ))]) :-
-    findall(Col, positions:rook(R/C, move(R/C, left, R/Col)), LeftMoves),
-    findall(Col, positions:rook(R/C, move(R/C, right, R/Col)), RightMoves),
-    append(LeftMoves, RightMoves, HorizontalMoves),
-    exclude(=(R/C), HorizontalMoves, FilteredMoves),
-    length(FilteredMoves, 7).
+    positions:rook_moves(R/C, Moves),
+    include(filter_row(R), Moves, HorizontalMoves),
+    \+ member(move(_, _, R/C), HorizontalMoves),
+    length(HorizontalMoves, 7).
 
 % Vertical movement
 test(rook_vertical, [forall((
-    between(1, 8, R),
-    between(1, 8, C)
+    between(1, 8, C),
+    between(1, 8, R)
   ))]) :-
-    findall(Row, positions:rook(R/C, move(R/C, down, Row/C)), DownMoves),
-    findall(Row, positions:rook(R/C, move(R/C, up, Row/C)), UpMoves),
-    append(DownMoves, UpMoves, VerticalMoves),
-    exclude(=(R/C), VerticalMoves, FilteredMoves),
-    length(FilteredMoves, 7).
+    positions:rook_moves(R/C, Moves),
+    include(filter_col(C), Moves, VerticalMoves),
+    \+ member(move(_, _, R/C), VerticalMoves),
+    length(VerticalMoves, 7).
 
 :- end_tests(rook).
 
 main :-
-  load_test_files([rook]),
-
   show_coverage(run_tests),
 
   halt.
