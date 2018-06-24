@@ -1,0 +1,7 @@
+BORDREPRESENTATIE
+
+Het parsen van de FEN-string gebeurt door middel van een DCG. Dit heeft als voordeel dat de parser, zonder verdere aanpassingen, bidirectioneel werkt. Dezelfde code die een FEN-string naar een bord kan omzetten, kan ook gebruikt worden om een bordrepresentatie om te zetten naar een FEN-string.
+
+Het bord wordt voorgesteld als een lijst van 8 rijen. Deze rijen komen overeen met de rijen van een echt schaakbord, van onder naar boven. De rij met index 0 in de lijst komt dus overeen met de onderste rij van het schaakbord, dit is belangrijk aangezien dit in FEN-notatie omgekeerd is. Het feit dat de rijen vanaf 0 worden ge\"indexeerd vormt geen probleem dankzij het `nth1/3` predicaat, wat indexfouten uitsluit. Elke rij is op zijn beurt nogmaals onderverdeeld in 8 vakjes, deze komen overeen met de kolommen A tot en met H van een echt schaakbord. De waarde van een vakje is ofwel het schaakstuk dat op die positie staat, ofwel `none`. Een schaakstuk wordt voorgesteld door middel van de tuple `piece(Type,Kleur)`, waarbij `Type` IN {bishop, rook, queen, king, pawn, knight} en Kleur IN {black, white}.
+
+TODO stel dit wat wiskundig voor met stelsels enzo brackets jeweetwel. Teken misschien een schaakbord? 
