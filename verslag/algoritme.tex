@@ -1,6 +1,210 @@
-ALGORITME
+\chapter{Algoritme}
 
-Het algoritme van mijn schaakcomputer is een basisimplementatie van minmax bomen, aangevuld met alpha-beta snoeien om de performantie te verhogeN.
+De basis van het algoritme van mijn schaakcomputer is gebaseerd op minimax-bomen. Op deze minimax-bomen heb ik alpha-beta snoeien toegepast om de hoeveelheid takken te verkleinen, waardoor de snelheid omhoog gaat en er dieper gezocht kan worden. Vertrekkend van deze basis heb ik nog twee aanpassingen toegepast, welke ik in onderstaande secties zal bespreken.
 
-- Random element
-- Dynamisch diepte
+\section{Scorefunctie}
+Om de beste zet te kunnen bepalen, is het noodzakelijk dat twee zetten met elkaar kunnen worden vergeleken. Hiervoor wordt een scorefunctie ge\"implementeerd. Deze scorefunctie is gebaseerd op het aantal stukken van de speler en het aantal stukken van de tegenstander, waarbij aan elk stuk een andere waarde wordt toegekend, zodanig dat bepaalde stukken belangrijker zijn dan andere. Dankzij deze scorefunctie zal over het algemeen de schaakcomputer steeds kiezen om zo snel mogelijk stukken van de tegenstander te slaan.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|l|c|}
+		\hline
+		\textbf{Stuk} & \textbf{Waarde}\\\hline
+		bishop & $3.000$\\
+		king & $1.000.000$\\
+		knight & $12.000$\\
+		pawn & $1.000$\\
+		queen & $25.000$\\
+		rook & $5.000$\\
+		\hline
+	\end{tabular}
+	\caption{Waarde per stuk in de scorefunctie}
+\end{table}
+
+\noindent Het valt op dat de koning een zeer hoge waarde heeft. Dit is noodzakelijk omdat tijdens het zoeken naar volgende zetten, niet wordt gecontroleerd of de speler schaak staat, dit zou namelijk een grote impact hebben op de snelheid. In plaats daarvan wordt er vanuit gegaan dat, indien de speler schaak zou staan, in de volgende zet de tegenstander de koning zou slaan. Dit is het geval dankzij de uitzonderlijk hoge waarde van de koning. Door de minimax functie zullen zetten waarbij de koning geslaan wordt niet gedaan worden, tenzij het niet anders kan, namelijk wanneer de speler schaakmat staat.
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Function{Score}{$situatie$}
+		\State $mijn\_score \gets \Call{score\_sub}{situatie, huidige\_speler}$
+		\State $tegenstander\_score \gets \Call{score\_sub}{situatie, tegenstander}$
+		\State \Return $mijn\_score - tegenstander\_score$
+		\EndFunction
+
+		\Function{Score\_Sub}{$situatie, speler$}
+		\State $stukken \gets \textit{alle stukken van $speler$}$
+		\State $scores_i \gets \Call{waarde}{stukken_i}$
+		\State \Return \Call{som}{$scores$}
+		\EndFunction
+	\end{algorithmic}
+	\caption{Scorefunctie}
+\end{algorithm}
+
+\newpage
+
+\section{Basisalgoritme: Minimax-bomen}
+Zoals reeds eerder vermeld vormen minimax-bomen de kern van het schaakalgoritme. Vanuit de huidige spelsituatie (het huidige bord, de rokademogelijkheden, \dots), worden alle mogelijke volgende spelsituaties bepaald. Voor elke volgende spelsituatie wordt dit algoritme nog eens herhaald, tot een vooraf ingestelde diepte. Om de tijdsduur binnen de perken te houden werd ervoor gekozen deze diepte te begrenzen op 3. Hieronder volgt een schets van het minimax-algoritme.
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Function{Minimax}{$situatie, diepte$}
+			\State $situaties \gets \Call{volgende\_spelsituaties}{situatie}$
+			\If{$diepte == 0$ of $situaties == \emptyset$}
+				\State \Return $situatie, \Call{score}{situatie}$
+			\EndIf
+			\State $beurt \gets state.beurt$
+			\If{$beurt == mijn\_speler$}
+				\State $beste\_score \gets -\infty$
+				\State $beste\_situatie \gets situatie$
+				\ForAll{$kandidaat \in situaties$}
+					\State $st, sc \gets \Call{minimax}{kandidaat, diepte-1}$
+					\If{$sc > beste\_score$}
+						\State $beste\_score \gets sc$
+						\State $beste\_situatie \gets st$
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\Else
+				\State $beste\_score \gets +\infty$
+				\State $beste\_situatie \gets situatie$
+				\ForAll{$kandidaat \in states$}
+					\State $st, sc \gets \Call{minimax}{kandidaat, diepte-1}$
+					\If{$sc < beste\_score$}
+						\State $beste\_score \gets sc$
+						\State $beste\_situatie \gets st$
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+	\caption{Minimax basisalgoritme}
+\end{algorithm}
+
+\section{Alpha-beta snoeien}
+Het basis minimax algoritme werkt perfect om de volgende zet te bepalen, maar heeft als nadeel dat de boom exponentieel groter wordt naarmate er dieper wordt gezocht. Vooral in het midden van het spel kan dit voor problemen zorgen aangezien er dan zeer veel geldige zetten zijn.  Een manier om de grootte van de boom te beperken, is alpha-beta snoeien toepassen op de boom. De tijd om een volgende zet te bepalen werd hiermee gemiddeld van 30 seconden verminderd naar 5. Het minimax algoritme dient hiervoor aangepast te worden, zodat niet enkel de score in rekening wordt gebracht, maar ook de factoren $\alpha$ en $\beta$.
+
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Function{alphabeta}{$situatie, diepte, \alpha, \beta$}
+			\State $situaties \gets \Call{volgende\_spelsituaties}{situatie}$
+			\If{$diepte == 0$ of $situaties == \emptyset$}
+				\State \Return $situatie, \Call{score}{situatie}$
+			\EndIf
+			\State $beurt \gets state.beurt$
+			\If{$beurt == mijn\_speler$}
+				\State $beste\_score \gets -\infty$
+				\State $beste\_situatie \gets situatie$
+				\ForAll{$kandidaat \in situaties$}
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, diepte-1, \alpha, \beta}$
+					\If{$sc > beste\_score$}
+						\State $beste\_score \gets sc$
+						\State $beste\_situatie \gets st$
+
+						\State $\alpha \gets \Call{max}{\alpha, sc}$
+						\If{$\beta \leq \alpha$}
+							\State \Return $beste\_situatie, beste\_score$
+						\EndIf
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\Else
+				\State $beste\_score \gets +\infty$
+				\State $beste\_situatie \gets situatie$
+				\ForAll{$kandidaat \in situaties$}
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, diepte-1, \alpha, \beta}$
+					\If{$sc < beste\_score$}
+						\State $beste\_score \gets sc$
+						\State $beste\_situatie \gets st$
+
+						\State $\beta \gets \Call{min}{\beta, sc}$
+						\If{$\beta \leq \alpha$}
+							\State \Return $beste\_situatie, beste\_score$
+						\EndIf
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+	\caption{Minimax met alpha-beta snoeien}
+\end{algorithm}
+
+\newpage
+
+\section{Uitbreiding 1: Randomisatie bij gelijke scores}
+Tijdens het testen van het schaakalgoritme viel onmiddellijk op dat de schaakcomputer steeds dezelfde zetten deed. Dit is logisch aangezien het vaak voorkomt dat er veel zetten zijn die dezelfde score opleveren, voornamelijk bij het begin van een partij. Hoewel dit an sich geen probleem vormt, kan het zijn dat de tegenstander zijn schaakcomputer zodanig programmeert om hier rekening mee te houden. Om dit te omzeilen werd het alphabeta algoritme uit de vorige sectie aangepast om een niet-deterministische factor in rekening te brengen, als volgt:
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Function{alphabeta}{$situatie, diepte, \alpha, \beta$}
+			\State \vdots
+			\If{$beurt == mijn\_speler$}
+				\State \vdots
+				\ForAll{$kandidaat \in situaties$}
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, diepte-1, \alpha, \beta}$
+					\State $pick\_equal \gets \Call{random}{0, 1} < 0.5$
+					\If{$sc > beste\_score$ of $(sc == beste\_score \text{ en } pick\_equal)$}
+						\State $beste\_score \gets sc$
+						\State \vdots
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\Else
+				\State \vdots
+				\ForAll{$kandidaat \in situaties$}
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, diepte-1, \alpha, \beta}$
+					\State $pick\_equal \gets \Call{random}{0, 1} < 0.5$
+					\If{$sc < beste\_score$ of $(sc == beste\_score \text{ en } pick\_equal)$}
+						\State $beste\_score \gets sc$
+						\State \vdots
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\EndIf
+		\EndFunction
+	\end{algorithmic}
+	\caption{Minimax met alpha-beta snoeien en randomisatie}
+\end{algorithm}
+
+\newpage
+
+\section{Uitbreiding 2: Dynamische diepte}
+Zoals eerder vermeld is de diepte van de zoekbomen beperkt tot 3, wegens performantieredenen. Het kan echter voorkomen, voornamelijk naar het einde van het spel toe, dat het aantal mogelijke zetten sterk vermindert. In dat geval zal de zoekboom ook veel kleiner zijn, waardoor naar een grotere diepte kan worden gezocht om mogelijks de tegenstander sneller mat te zetten. Dit kan eenvoudig worden ge\"implementeerd in het vorige minimax algoritme.
+\begin{algorithm}
+	\begin{algorithmic}[1]
+		\Function{alphabeta}{$situatie, diepte, \alpha, \beta$}
+			\State \vdots
+			\If{$beurt == mijn\_speler$}
+				\State \vdots
+				\ForAll{$kandidaat \in situaties$}
+					\State $nieuwediepte \gets \Call{dynamische\_diepte}{situaties, diepte}$
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, nieuwediepte, \alpha, \beta}$
+					\State $pick\_equal \gets \Call{random}{0, 1} < 0.5$
+					\If{$sc > beste\_score$ of $(sc == beste\_score \text{ en } pick\_equal)$}
+						\State $beste\_score \gets sc$
+						\State \vdots
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\Else
+				\State \vdots
+				\ForAll{$kandidaat \in situaties$}
+					\State $nieuwediepte \gets \Call{dynamische\_diepte}{situaties, diepte}$
+					\State $st, sc \gets \Call{alphabeta}{kandidaat, nieuwediepte, \alpha, \beta}$
+					\State $pick\_equal \gets \Call{random}{0, 1} < 0.5$
+					\If{$sc < beste\_score$ of $(sc == beste\_score \text{ en } pick\_equal)$}
+						\State $beste\_score \gets sc$
+						\State \vdots
+					\EndIf
+				\EndFor
+				\State \Return $beste\_situatie, beste\_score$
+			\EndIf
+		\EndFunction
+		\Function{dynamische\_diepte}{$situaties, diepte$}
+			\If{$situaties.length < 4$}
+				\State \Return $diepte + 1$
+			\EndIf
+		\State \Return $diepte$
+		\EndFunction
+	\end{algorithmic}
+	\caption{Minimax met alpha-beta snoeien, randomisatie en dynamische diepte}
+\end{algorithm}

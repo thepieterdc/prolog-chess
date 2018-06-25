@@ -1,0 +1,58 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[dutch]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{biblatex}
+\usepackage{listings}
+\usepackage{scrlayer}
+\usepackage{svg}
+\usepackage{titlesec}
+
+\addbibresource{references.bib}
+
+\usepackage[default]{lato}
+\renewcommand{\familydefault}{\sfdefault}
+
+\titleclass{\chapter}{straight}
+
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{18pt}{\huge}
+\titlespacing*{\chapter}{0pt}{20pt}{20pt}
+
+\nocite{*}
+
+\lstset{ %
+	basicstyle=\ttfamily,%
+	breakatwhitespace=true,
+	breaklines=true,
+	commentstyle=\color{gray},
+	frame=single,
+	keepspaces=true,
+	language=Prolog,
+	numbers=left,
+	numbersep=5pt,
+	numberstyle=\color{gray},
+	showspaces=false
+}
+
+\setcounter{secnumdepth}{5}
+
+\begin{document}
+	\input{titlepage.tex}
+	\input{inleiding.tex}
+	\newpage
+	\input{bord.tex}
+	\newpage
+	\input{algoritme.tex}
+	\newpage
+	\input{conclusie.tex}
+	\newpage
+	\input{referenties.tex}
+	\newpage
+	\input{broncode.tex}
+\end{document}

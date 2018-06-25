@@ -1,7 +1,16 @@
-BORDREPRESENTATIE
+\chapter{Bordrepresentatie}
 
-Het parsen van de FEN-string gebeurt door middel van een DCG. Dit heeft als voordeel dat de parser, zonder verdere aanpassingen, bidirectioneel werkt. Dezelfde code die een FEN-string naar een bord kan omzetten, kan ook gebruikt worden om een bordrepresentatie om te zetten naar een FEN-string.
+\section{Parser}
+Het verwerken van een FEN-string gebeurt door middel van een DCG. Dit heeft als voordeel dat de parser, zonder verdere aanpassingen, bidirectioneel werkt. Dezelfde code die een FEN-string naar een bord kan omzetten, kan dus ook gebruikt worden om een bordrepresentatie om te zetten naar een FEN-string. Het is eveneens mogelijk om via deze DCG alle mogelijke geldige schaakborden te genereren. Tijdens het opstellen van de parser werd hiervoor gekozen omdat dit nuttig leek tijdens het zoeken naar de beste volgende zet, maar uiteindelijk heb ik dit niet gedaan wegens performantieredenen.
 
-Het bord wordt voorgesteld als een lijst van 8 rijen. Deze rijen komen overeen met de rijen van een echt schaakbord, van onder naar boven. De rij met index 0 in de lijst komt dus overeen met de onderste rij van het schaakbord, dit is belangrijk aangezien dit in FEN-notatie omgekeerd is. Het feit dat de rijen vanaf 0 worden ge\"indexeerd vormt geen probleem dankzij het `nth1/3` predicaat, wat indexfouten uitsluit. Elke rij is op zijn beurt nogmaals onderverdeeld in 8 vakjes, deze komen overeen met de kolommen A tot en met H van een echt schaakbord. De waarde van een vakje is ofwel het schaakstuk dat op die positie staat, ofwel `none`. Een schaakstuk wordt voorgesteld door middel van de tuple `piece(Type,Kleur)`, waarbij `Type` IN {bishop, rook, queen, king, pawn, knight} en Kleur IN {black, white}.
+\section{Schaakbord}
+Een schaakbord wordt voorgesteld als een lijst van 8 rijen. Deze rijen komen overeen met de rijen van een echt schaakbord, van onder naar boven. De rij met index 0 in de lijst komt dus overeen met de onderste rij van het schaakbord. Dit is belangrijk om te noteren, aangezien in FEN-notatie het bord van boven naar onder wordt voorgesteld. Het feit dat de rijen vanaf 0 worden ge\"indexeerd zorgt niet voor problemen dankzij het \emph{nth1/3} predicaat, dat indexfouten door de programmeur uitsluit.
+$$bord = \{rij_1, rij_2, rij_3, rij_4, rij_5, rij_6, rij_7, rij_8\}$$
+Elke rij is op zijn beurt nogmaals onderverdeeld in 8 vakjes, deze komen overeen met respectievelijk de kolommen $A$ tot en met $G$ van het schaakbord. De waarde van een vakje is ofwel het schaakstuk dat op die positie staat, ofwel \emph{none} wanneer het vakje leeg is.
 
-TODO stel dit wat wiskundig voor met stelsels enzo brackets jeweetwel. Teken misschien een schaakbord? 
+$$rij = \{piece_A, none, piece_C, none, piece_E, none, piece_F, none\}$$
+
+\section{Schaakstukken}
+Schaakstukken worden voorgesteld door middel van een tuple $piece(Type, Kleur)$, waarbij $Type \in \{bishop, king, knight, pawn, queen, rook\}$ en $Kleur \in \{black, white\}$. Op deze manier kan via unificatie snel worden gezocht naar alle stukken van een bepaald type, of van een bepaalde speler.
+\paragraph*{Voorbeeld} 
+$$piece = piece(king, white)$$

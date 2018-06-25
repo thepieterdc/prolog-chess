@@ -1,0 +1,19 @@
+\DeclareNewLayer[
+	foreground,
+	foot,
+	contents={\parbox[b][\layerheight][b]{\layerwidth}{%
+		\includegraphics[width=5cm]{assets/logo-ugent.pdf}\hfill\includegraphics[width=7cm]{assets/logo-we.pdf}%
+	}}
+]{titlepage.logos}
+
+\title{
+	\Large{Logisch Programmeren}\\
+	\vspace*{0.5cm}
+	\huge{Project Schaakcomputer}
+}
+
+\author{Pieter De Clercq}
+
+\AddLayersToPageStyle{empty}{titlepage.logos}
+\maketitle
+\RemoveLayersFromPageStyle{empty}{titlepage.logos}

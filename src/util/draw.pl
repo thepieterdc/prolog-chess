@@ -30,7 +30,7 @@ drawBoard(state(Board, _, _, _, _, _)) :- drawBoard(Board).
 drawLine(0, _) :- !.
 drawLine(N, C) :- N1 is N-1, write(C), drawLine(N1, C).
 
-drawPiece(none) :- !, write('·').
+drawPiece(none) :- !, write('\u00B7').
 drawPiece(piece(Type,Color)) :- asciiPiece(Type, Color, AsciiCode), write(AsciiCode).
 
 drawRow(row(P1, P2, P3, P4, P5, P6, P7, P8)) :-
